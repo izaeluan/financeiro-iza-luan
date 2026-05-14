@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Calculadora da Família</title>
+<title>Financeiro Iza & Luan</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -36,6 +37,90 @@ body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;background:var(--b
 button{cursor:pointer;font-family:inherit;border:none;background:none;color:inherit}
 input,select,textarea{font-family:inherit;outline:none}
 ul,ol{list-style:none}
+
+/* ── LOGIN SCREEN ─────────────────────────────────────── */
+#login-screen{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  transition:opacity 300ms ease;
+}
+#login-screen.hide{opacity:0;pointer-events:none;}
+.login-card{
+  background:var(--sur);border:1px solid var(--bdr);
+  border-radius:var(--r-xl);box-shadow:var(--sh-lg);
+  padding:36px 32px 32px;
+  width:100%;max-width:360px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.login-logo{font-size:28px;margin-bottom:6px;}
+.login-title{font-size:22px;font-weight:800;color:var(--txt);margin-bottom:4px;text-align:center;}
+.login-sub{font-size:14px;color:var(--txt2);margin-bottom:28px;text-align:center;}
+.login-form{width:100%;display:flex;flex-direction:column;gap:12px;}
+.login-fld{display:flex;flex-direction:column;gap:5px;}
+.login-fld label{font-size:13px;font-weight:700;color:var(--txt2);}
+.login-fld input{
+  padding:12px 14px;background:var(--sur2);border:1.5px solid var(--bdr);
+  border-radius:var(--r-sm);font-size:16px;color:var(--txt);
+  transition:var(--tr);width:100%;
+}
+.login-fld input:focus{border-color:var(--brand);background:var(--sur);}
+.pin-input{
+  letter-spacing:8px;font-size:22px;font-weight:800;text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.login-btn{
+  margin-top:8px;width:100%;padding:13px;
+  background:var(--brand);color:var(--brand-fg);
+  border-radius:var(--r-sm);font-size:15px;font-weight:700;
+  transition:var(--tr);
+}
+.login-btn:hover{opacity:.87;}
+.login-err{
+  font-size:13px;font-weight:600;color:var(--red);
+  background:var(--red-bg);padding:9px 12px;border-radius:var(--r-sm);
+  text-align:center;display:none;
+}
+.login-err.show{display:block;}
+
+/* PIN dots visual */
+.pin-dots{display:flex;gap:10px;justify-content:center;margin-bottom:4px;}
+.pin-dot{
+  width:14px;height:14px;border-radius:50%;
+  border:2px solid var(--bdr);background:transparent;
+  transition:var(--tr);
+}
+.pin-dot.filled{background:var(--brand);border-color:var(--brand);}
+
+/* ── CHANGE PIN SCREEN ────────────────────────────────── */
+#change-pin-screen{
+  position:fixed;inset:0;z-index:900;
+  background:rgba(0,0,0,.6);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;backdrop-filter:blur(4px);
+}
+#change-pin-screen.show{display:flex;}
+.change-pin-card{
+  background:var(--sur);border-radius:var(--r-xl);
+  box-shadow:var(--sh-lg);padding:32px 28px 28px;
+  width:100%;max-width:360px;
+}
+.change-pin-title{font-size:18px;font-weight:800;margin-bottom:6px;}
+.change-pin-sub{font-size:14px;color:var(--txt2);margin-bottom:24px;line-height:1.5;}
+.change-pin-form{display:flex;flex-direction:column;gap:12px;}
+.change-pin-err{
+  font-size:13px;font-weight:600;color:var(--red);
+  background:var(--red-bg);padding:9px 12px;border-radius:var(--r-sm);
+  display:none;
+}
+.change-pin-err.show{display:block;}
+.change-pin-ok{
+  font-size:13px;font-weight:600;color:var(--green);
+  background:var(--green-bg);padding:9px 12px;border-radius:var(--r-sm);
+  display:none;
+}
+.change-pin-ok.show{display:block;}
 
 /* LAYOUT */
 #app{min-height:100dvh;display:flex;flex-direction:column}
@@ -137,7 +222,6 @@ ul,ol{list-style:none}
 .crd-r2{margin-top:4px;font-size:12px;color:var(--txt3)}
 .crd-r3,.crd-r4{margin-top:6px;font-size:12px;color:var(--txt2)}
 .crd-r5{display:flex;align-items:center;justify-content:flex-start;margin-top:8px}
-.crd-origin{font-size:12px;color:var(--txt2)}
 
 /* EMPTY STATE */
 .empty{text-align:center;padding:56px 20px;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r-lg)}
@@ -145,15 +229,29 @@ ul,ol{list-style:none}
 .empty-t{font-size:17px;font-weight:700;margin-bottom:6px}
 .empty-s{font-size:14px;color:var(--txt2);margin-bottom:20px}
 
-/* COMPROMISSOS */
-.comp-sec{max-width:1100px;margin:14px auto 0;padding:0 16px}
-.comp-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r-lg);padding:14px 16px}
-.sec-title{font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
-.comp-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdr)}
-.comp-row:last-child{border-bottom:none;padding-bottom:0}
-.comp-name{flex:1;font-size:14px;font-weight:600}
-.comp-prog{font-size:13px;color:var(--txt2);font-weight:700;min-width:48px;text-align:center}
-.comp-end{font-size:12px;color:var(--txt3)}
+/* CADASTROS */
+.cad-hdr{max-width:1100px;margin:0 auto;padding:20px 16px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.pg-title{font-size:20px;font-weight:800}
+.tab-nav{display:flex;gap:3px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:3px;flex-wrap:wrap}
+.tab-btn{padding:6px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:700;color:var(--txt2);transition:var(--tr);white-space:nowrap}
+.tab-btn.act{background:var(--sur);color:var(--txt);box-shadow:var(--sh)}
+.tab-btn:hover:not(.act){color:var(--txt)}
+.cad-subhdr{max-width:1100px;margin:16px auto 0;padding:0 16px;display:flex;align-items:center;justify-content:space-between}
+.cad-count{font-size:13px;font-weight:600;color:var(--txt2)}
+.cad-list{max-width:1100px;margin:8px auto 0;padding:0 16px;display:flex;flex-direction:column;gap:6px}
+.cad-item{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.cad-name{flex:1}
+.cad-n{font-size:15px;font-weight:700}
+.cad-s{font-size:12px;color:var(--txt3);margin-top:2px}
+.cad-badge{font-size:11px;padding:2px 8px;border-radius:100px;font-weight:700;flex-shrink:0}
+.b-on{background:var(--green-bg);color:var(--green)}
+.b-off{background:var(--sur2);color:var(--txt3)}
+
+/* DIVIDER */
+.div{height:1px;background:var(--bdr);margin:12px 0}
+.step-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--txt2);margin-bottom:16px;cursor:pointer;transition:var(--tr)}
+.step-back:hover{color:var(--txt)}
+.step-back svg{width:14px;height:14px}
 
 /* OVERLAY */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:200ms;backdrop-filter:blur(3px)}
@@ -232,6 +330,8 @@ ul,ol{list-style:none}
 .mpop-item:last-child{border-bottom:none}
 .mpop-item:hover{background:var(--sur2)}
 .mpop-item svg{width:16px;height:16px;color:var(--txt2);flex-shrink:0}
+.mpop-item.danger{color:var(--red)}
+.mpop-item.danger svg{color:var(--red)}
 
 /* PICKER */
 .pckr{position:fixed;z-index:150;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r-lg);box-shadow:var(--sh-lg);opacity:0;pointer-events:none;transform:translateY(-4px);transition:150ms;min-width:160px;max-height:300px;overflow-y:auto}
@@ -240,34 +340,13 @@ ul,ol{list-style:none}
 .pckr-item:hover{background:var(--sur2)}
 .pckr-item.act{color:var(--brand);font-weight:800}
 
-/* CADASTROS */
-.cad-hdr{max-width:1100px;margin:0 auto;padding:20px 16px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.pg-title{font-size:20px;font-weight:800}
-.tab-nav{display:flex;gap:3px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:3px;flex-wrap:wrap}
-.tab-btn{padding:6px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:700;color:var(--txt2);transition:var(--tr);white-space:nowrap}
-.tab-btn.act{background:var(--sur);color:var(--txt);box-shadow:var(--sh)}
-.tab-btn:hover:not(.act){color:var(--txt)}
-.cad-subhdr{max-width:1100px;margin:16px auto 0;padding:0 16px;display:flex;align-items:center;justify-content:space-between}
-.cad-count{font-size:13px;font-weight:600;color:var(--txt2)}
-.cad-list{max-width:1100px;margin:8px auto 0;padding:0 16px;display:flex;flex-direction:column;gap:6px}
-.cad-item{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:12px 16px;display:flex;align-items:center;gap:12px}
-.cad-name{flex:1}
-.cad-n{font-size:15px;font-weight:700}
-.cad-s{font-size:12px;color:var(--txt3);margin-top:2px}
-.cad-badge{font-size:11px;padding:2px 8px;border-radius:100px;font-weight:700;flex-shrink:0}
-.b-on{background:var(--green-bg);color:var(--green)}
-.b-off{background:var(--sur2);color:var(--txt3)}
-
-/* DIVIDER */
-.div{height:1px;background:var(--bdr);margin:12px 0}
-.step-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--txt2);margin-bottom:16px;cursor:pointer;transition:var(--tr)}
-.step-back:hover{color:var(--txt)}
-.step-back svg{width:14px;height:14px}
-
 /* LOADING */
 .loading{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:12px}
 .spin{width:22px;height:22px;border:2px solid var(--bdr);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+.confirm-recv-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:12px;font-weight:700;background:var(--green-bg);color:var(--green);cursor:pointer;transition:var(--tr);border:none}
+.confirm-recv-btn:hover{opacity:.8}
 
 /* RESPONSIVE */
 @media(max-width:768px){
@@ -275,260 +354,131 @@ ul,ol{list-style:none}
   .cards{display:flex!important}
   .f-desktop{display:none!important}
   .f-mobile{display:flex!important}
-  .comp-desktop{display:none}
 }
 @media(min-width:769px){
   .tbl-wrap{display:block!important}
   .cards{display:none!important}
   .f-mobile{display:none!important}
   .f-desktop{display:flex!important}
-  .comp-mobile{display:none}
 }
 
 @media(max-width:640px){
-  /* Core layout fixes — extended by the MOBILE OPTIMIZATIONS block below */
   .row2{grid-template-columns:1fr;gap:10px}
   .fld{min-width:0}
   .fld input,.fld select,.fld textarea,.btn-full{width:100%;max-width:100%;min-width:0}
   .choices{gap:9px}
   .ch-label{font-size:14px}
-  .ch-sub{font-size:12px;line-height:1.35}
   .step-back{margin-bottom:12px}
   .m-title{font-size:16px}
   .m-close{width:32px;height:32px;font-size:18px}
+  .login-card{padding:28px 20px 24px;}
+  .login-title{font-size:19px;}
 }
-.confirm-recv-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:12px;font-weight:700;background:var(--green-bg);color:var(--green);cursor:pointer;transition:var(--tr);border:none}
-.confirm-recv-btn:hover{opacity:.8}
-
-/* ── MOBILE OPTIMIZATIONS ─────────────────────────────── */
-
-/*
-  MODAL AS BOTTOM SHEET ON MOBILE
-  Slides up from the bottom, respects safe area, fully scrollable
-*/
-@media(max-width:640px){
-  /* Overlay: align bottom, no side padding */
-  .ov{
-    padding:0;
-    align-items:flex-end;
-  }
-  /* Modal: bottom sheet style */
-  .modal{
-    max-width:100%;
-    width:100%;
-    /* Prevent Safari from allowing it to exceed screen width */
-    box-sizing:border-box;
-    border-radius:20px 20px 0 0;
-    max-height:92dvh;
-    display:flex;
-    flex-direction:column;
-    transform:translateY(100%);
-    /* Ensure no horizontal overflow on real iPhone */
-    overflow-x:hidden;
-  }
-  .ov.on .modal{
-    transform:translateY(0);
-  }
-  /* Drag handle */
-  .modal::before{
-    content:'';
-    display:block;
-    width:36px;
-    height:4px;
-    background:var(--bdr);
-    border-radius:2px;
-    margin:10px auto 0;
-    flex-shrink:0;
-  }
-  /* Header: sticky inside modal */
-  .m-hdr{
-    padding:10px 16px 12px;
-    flex-shrink:0;
-    box-sizing:border-box;
-    width:100%;
-  }
-  /* Body: flex-grow, scrollable, strictly contained */
-  .m-body{
-    padding:14px 16px 8px;
-    flex:1;
-    overflow-y:auto;
-    overflow-x:hidden;
-    -webkit-overflow-scrolling:touch;
-    overscroll-behavior:contain;
-    box-sizing:border-box;
-    width:100%;
-    /* Prevent children from blowing out width */
-    min-width:0;
-  }
-  /* Footer: stays at bottom, safe area aware */
-  .m-foot{
-    padding:12px 16px;
-    padding-bottom:max(16px, env(safe-area-inset-bottom));
-    flex-shrink:0;
-    background:var(--sur);
-    border-top:1px solid var(--bdr);
-    box-sizing:border-box;
-    width:100%;
-  }
-
-  /* ── ALL form elements: fully contained, no iOS zoom ── */
-  .fld input,
-  .fld select,
-  .fld textarea{
-    font-size:16px;   /* prevent iOS auto-zoom */
-    width:100%;
-    max-width:100%;
-    min-width:0;
-    box-sizing:border-box;
-  }
-
-  /* ── iOS date input fix: Safari renders it natively and ignores width ── */
-  .fld input[type=date]{
-    -webkit-appearance:none;
-    appearance:none;
-    width:100%;
-    max-width:100%;
-    min-width:0;
-    box-sizing:border-box;
-    display:block;
-    /* Ensure the value text is left-aligned like other inputs */
-    text-align:left;
-  }
-
-  /* ── row2: always 1 column inside the modal on real devices ── */
-  .m-body .row2{
-    grid-template-columns:1fr;
-    gap:10px;
-  }
-  .m-body .row2 > *{
-    min-width:0;
-    width:100%;
-    box-sizing:border-box;
-  }
-
-  /* ── bin-grp: keep side-by-side, but ensure it doesn't overflow ── */
-  .bin-grp{
-    grid-template-columns:1fr 1fr;
-    width:100%;
-    box-sizing:border-box;
-  }
-  .bin-btn{
-    padding:13px 8px;
-    font-size:15px;
-    min-width:0;
-    box-sizing:border-box;
-  }
-
-  /* ── choices: full width cards ── */
-  .ch-card{
-    padding:14px;
-    min-height:62px;
-    box-sizing:border-box;
-    width:100%;
-  }
-
-  /* ── Btn full comfortable ── */
-  .btn-full{
-    padding:15px;
-    font-size:16px;
-    border-radius:12px;
-    width:100%;
-    box-sizing:border-box;
-  }
-
-  /* Step back larger tap area */
-  .step-back{
-    padding:6px 0;
-    font-size:14px;
-  }
-
-  /* Fields last item margin */
-  .fld:last-child{ margin-bottom:8px; }
-  .fld{ min-width:0; width:100%; box-sizing:border-box; }
-
-  /* info-box spacing */
-  .info-box{ font-size:13px; }
-
-  /* Wizard question text */
-  .wiz-q{ font-size:15px; line-height:1.45; }
-
-  /* Bottom sheet (detail/actions) safe area */
-  .sheet{
-    padding-bottom: max(32px, env(safe-area-inset-bottom, 32px));
-    box-sizing:border-box;
-    width:100%;
-    overflow-x:hidden;
-  }
-
-  /* Summary values slightly smaller */
-  .sum-val{ font-size:14px; }
-  .sum-lbl{ font-size:10px; }
-
-  /* Cards */
-  .crd{ padding:14px; box-sizing:border-box; }
-  .crd-desc{ font-size:15px; }
-  .crd-val{ font-size:15px; }
-
-  /* Filter row */
-  .f-mobile-row{ gap:6px; }
-  .f-sel-m{
-    font-size:14px;
-    padding:9px 10px;
-    min-width:0;
-    box-sizing:border-box;
-  }
-
-  /* Header */
-  .hdr-in{ height:52px; }
-  .sel-btn{ font-size:14px; padding:6px 10px; }
-  .btn{ font-size:14px; padding:8px 14px; }
-}
-
-/* iPhone notch / Dynamic Island: extra safe area top for sticky header */
-@supports(padding-top: env(safe-area-inset-top)){
-  #hdr{
-    padding-top: env(safe-area-inset-top);
-  }
-}
-
-/* Focus-visible: clean, no default ugly ring on mobile */
-*:focus-visible{
-  outline:2px solid var(--brand);
-  outline-offset:2px;
-}
-*:focus:not(:focus-visible){ outline:none; }
 
 @media(max-width:640px){
-  /* Launch popup: always at bottom on mobile */
-  .lpop{
-    position:fixed !important;
-    top:auto !important;
-    bottom:0 !important;
-    left:0 !important;
-    right:0 !important;
-    width:100% !important;
-    border-radius:20px 20px 0 0;
-    min-width:unset;
-    padding-bottom: env(safe-area-inset-bottom, 16px);
-    transform:translateY(100%) !important;
-    box-shadow:var(--sh-lg);
-    transition:220ms ease;
-  }
-  .lpop.on{
-    transform:translateY(0) !important;
-  }
-  .lpop-opt{
-    padding:17px 20px;
-    font-size:16px;
-  }
-  .lpop-icon{
-    font-size:22px;
-  }
-  /* Add overlay when lpop is open on mobile */
+  .ov{padding:0;align-items:flex-end;}
+  .modal{max-width:100%;width:100%;box-sizing:border-box;border-radius:20px 20px 0 0;max-height:92dvh;display:flex;flex-direction:column;transform:translateY(100%);overflow-x:hidden;}
+  .ov.on .modal{transform:translateY(0);}
+  .modal::before{content:'';display:block;width:36px;height:4px;background:var(--bdr);border-radius:2px;margin:10px auto 0;flex-shrink:0;}
+  .m-hdr{padding:10px 16px 12px;flex-shrink:0;box-sizing:border-box;width:100%;}
+  .m-body{padding:14px 16px 8px;flex:1;overflow-y:auto;overflow-x:hidden;box-sizing:border-box;width:100%;min-width:0;}
+  .m-foot{padding:12px 16px;padding-bottom:max(16px, env(safe-area-inset-bottom));flex-shrink:0;background:var(--sur);border-top:1px solid var(--bdr);box-sizing:border-box;width:100%;}
+  .fld input,.fld select,.fld textarea{font-size:16px;width:100%;max-width:100%;min-width:0;box-sizing:border-box;}
+  .fld input[type=date]{-webkit-appearance:none;appearance:none;width:100%;max-width:100%;min-width:0;box-sizing:border-box;display:block;text-align:left;}
+  .m-body .row2{grid-template-columns:1fr;gap:10px;}
+  .m-body .row2 > *{min-width:0;width:100%;box-sizing:border-box;}
+  .bin-grp{grid-template-columns:1fr 1fr;width:100%;box-sizing:border-box;}
+  .bin-btn{padding:13px 8px;font-size:15px;min-width:0;box-sizing:border-box;}
+  .ch-card{padding:14px;min-height:62px;box-sizing:border-box;width:100%;}
+  .btn-full{padding:15px;font-size:16px;border-radius:12px;width:100%;box-sizing:border-box;}
+  .step-back{padding:6px 0;font-size:14px;}
+  .fld:last-child{margin-bottom:8px;}
+  .fld{min-width:0;width:100%;box-sizing:border-box;}
+  .info-box{font-size:13px;}
+  .wiz-q{font-size:15px;line-height:1.45;}
+  .sheet{padding-bottom:max(32px,env(safe-area-inset-bottom,32px));box-sizing:border-box;width:100%;overflow-x:hidden;}
+  .sum-val{font-size:14px;}
+  .sum-lbl{font-size:10px;}
+  .crd{padding:14px;box-sizing:border-box;}
+  .crd-desc{font-size:15px;}
+  .crd-val{font-size:15px;}
+  .f-mobile-row{gap:6px;}
+  .f-sel-m{font-size:14px;padding:9px 10px;min-width:0;box-sizing:border-box;}
+  .hdr-in{height:52px;}
+  .sel-btn{font-size:14px;padding:6px 10px;}
+  .btn{font-size:14px;padding:8px 14px;}
+}
+
+@supports(padding-top:env(safe-area-inset-top)){
+  #hdr{padding-top:env(safe-area-inset-top);}
+}
+
+*:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+*:focus:not(:focus-visible){outline:none;}
+
+@media(max-width:640px){
+  .lpop{position:fixed!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;border-radius:20px 20px 0 0;min-width:unset;padding-bottom:env(safe-area-inset-bottom,16px);transform:translateY(100%)!important;box-shadow:var(--sh-lg);transition:220ms ease;}
+  .lpop.on{transform:translateY(0)!important;}
+  .lpop-opt{padding:17px 20px;font-size:16px;}
+  .lpop-icon{font-size:22px;}
 }
 </style>
 </head>
 <body>
+
+<!-- ── LOGIN SCREEN ─────────────────────────────────────── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🏠</div>
+    <div class="login-title">Financeiro Iza & Luan</div>
+    <div class="login-sub">Entre com seu usuário e PIN</div>
+    <div class="login-form">
+      <div class="login-fld">
+        <label>Usuário</label>
+        <input type="text" id="login-user" placeholder="seu usuário" autocomplete="username" autocorrect="off" autocapitalize="none" spellcheck="false">
+      </div>
+      <div class="login-fld">
+        <label>PIN</label>
+        <div class="pin-dots" id="pin-dots">
+          <div class="pin-dot" id="dot-0"></div>
+          <div class="pin-dot" id="dot-1"></div>
+          <div class="pin-dot" id="dot-2"></div>
+          <div class="pin-dot" id="dot-3"></div>
+        </div>
+        <input type="password" id="login-pin" class="pin-input" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password">
+      </div>
+      <div class="login-err" id="login-err">Usuário ou PIN incorretos</div>
+      <button class="login-btn" id="login-btn" onclick="handleLogin()">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHANGE PIN SCREEN ────────────────────────────────── -->
+<div id="change-pin-screen">
+  <div class="change-pin-card">
+    <div class="change-pin-title" id="change-pin-title">🔐 Criar seu PIN</div>
+    <div class="change-pin-sub" id="change-pin-sub">Este é seu primeiro acesso. Crie um PIN de 4 dígitos que só você vai saber.</div>
+    <div class="change-pin-form">
+      <div class="login-fld" id="change-pin-old-wrap" style="display:none">
+        <label>PIN atual</label>
+        <input type="password" id="change-pin-old" class="pin-input" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+      </div>
+      <div class="login-fld">
+        <label>Novo PIN (4 dígitos)</label>
+        <input type="password" id="change-pin-new" class="pin-input" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+      </div>
+      <div class="login-fld">
+        <label>Confirmar novo PIN</label>
+        <input type="password" id="change-pin-confirm" class="pin-input" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+      </div>
+      <div class="change-pin-err" id="change-pin-err"></div>
+      <div class="change-pin-ok" id="change-pin-ok">✅ PIN alterado com sucesso!</div>
+      <button class="login-btn" onclick="handleSavePin()">Salvar PIN</button>
+      <button id="change-pin-cancel" class="btn btn-ghost btn-full" style="margin-top:4px;display:none" onclick="closeChangePinScreen()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div id="app">
   <div class="loading" id="loading-screen">
     <div class="spin"></div>
@@ -554,11 +504,16 @@ ul,ol{list-style:none}
   <div class="mpop-item" onclick="toggleTheme();closePops()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Tema claro/escuro
   </div>
+  <div class="mpop-item" onclick="openChangePinFromMenu();closePops()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Trocar PIN
+  </div>
+  <div class="mpop-item danger" onclick="logout();closePops()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sair
+  </div>
 </div>
 
-<!-- Month picker -->
+<!-- Month/Year pickers -->
 <div class="pckr" id="pckr-mes"></div>
-<!-- Year picker -->
 <div class="pckr" id="pckr-ano"></div>
 
 <!-- Modal overlay -->
@@ -599,6 +554,187 @@ const fbApp = initializeApp({
 });
 const db = getFirestore(fbApp);
 
+// ─── AUTH ────────────────────────────────────────────────────────────────────
+const SALT = 'fin_iza_luan_2025';
+
+async function hashPin(pin) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin + SALT);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getSession() { return localStorage.getItem('auth_user'); }
+function setSession(u) { localStorage.setItem('auth_user', u); }
+function clearSession() { localStorage.removeItem('auth_user'); }
+
+async function tryLogin(username, pin) {
+  const u = username.trim().toLowerCase();
+  if(!u || !pin || pin.length !== 4) return { ok:false, msg:'Preencha usuário e PIN de 4 dígitos' };
+  try {
+    const userDoc = await getDoc(doc(db, 'usuarios', u));
+    if(!userDoc.exists()) return { ok:false, msg:'Usuário ou PIN incorretos' };
+    const data = userDoc.data();
+    const hashed = await hashPin(pin);
+    if(data.pin !== hashed) return { ok:false, msg:'Usuário ou PIN incorretos' };
+    setSession(u);
+    return { ok:true, primeiroAcesso: data.primeiroAcesso === true, nome: data.nome || u };
+  } catch(e) {
+    console.error(e);
+    return { ok:false, msg:'Erro ao conectar. Tente novamente.' };
+  }
+}
+
+async function updatePin(username, newPin, oldPin, isFirstAccess) {
+  if(!isFirstAccess && oldPin) {
+    // verify old pin
+    const userDoc = await getDoc(doc(db, 'usuarios', username));
+    if(!userDoc.exists()) return { ok:false, msg:'Usuário não encontrado' };
+    const hashed = await hashPin(oldPin);
+    if(userDoc.data().pin !== hashed) return { ok:false, msg:'PIN atual incorreto' };
+  }
+  if(!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) return { ok:false, msg:'O PIN deve ter exatamente 4 dígitos numéricos' };
+  const hashedNew = await hashPin(newPin);
+  await updateDoc(doc(db, 'usuarios', username), { pin: hashedNew, primeiroAcesso: false });
+  return { ok:true };
+}
+
+// ─── LOGIN UI ─────────────────────────────────────────────────────────────────
+let _changePinIsFirst = false;
+let _currentUser = null;
+
+window.handleLogin = async () => {
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-err');
+  const user = document.getElementById('login-user').value;
+  const pin = document.getElementById('login-pin').value;
+  btn.textContent = 'Entrando...';
+  btn.disabled = true;
+  err.classList.remove('show');
+  const result = await tryLogin(user, pin);
+  btn.textContent = 'Entrar';
+  btn.disabled = false;
+  if(!result.ok) {
+    err.textContent = result.msg;
+    err.classList.add('show');
+    document.getElementById('login-pin').value = '';
+    updatePinDots('');
+    return;
+  }
+  _currentUser = user.trim().toLowerCase();
+  // Hide login screen
+  const ls = document.getElementById('login-screen');
+  ls.classList.add('hide');
+  setTimeout(() => ls.style.display = 'none', 300);
+  if(result.primeiroAcesso) {
+    showChangePinScreen(true);
+  } else {
+    await bootApp();
+  }
+};
+
+// PIN dots feedback
+function updatePinDots(val) {
+  for(let i=0;i<4;i++){
+    const d = document.getElementById('dot-'+i);
+    if(d) d.classList.toggle('filled', i < val.length);
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const pinInput = document.getElementById('login-pin');
+  if(pinInput) {
+    pinInput.addEventListener('input', () => {
+      pinInput.value = pinInput.value.replace(/\D/g,'').slice(0,4);
+      updatePinDots(pinInput.value);
+    });
+    pinInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') window.handleLogin();
+    });
+  }
+  const userInput = document.getElementById('login-user');
+  if(userInput) {
+    userInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') document.getElementById('login-pin').focus();
+    });
+  }
+});
+
+// ─── CHANGE PIN SCREEN ────────────────────────────────────────────────────────
+function showChangePinScreen(isFirst) {
+  _changePinIsFirst = isFirst;
+  const screen = document.getElementById('change-pin-screen');
+  const title = document.getElementById('change-pin-title');
+  const sub = document.getElementById('change-pin-sub');
+  const oldWrap = document.getElementById('change-pin-old-wrap');
+  const cancelBtn = document.getElementById('change-pin-cancel');
+  const okEl = document.getElementById('change-pin-ok');
+  const errEl = document.getElementById('change-pin-err');
+  // reset fields
+  document.getElementById('change-pin-old').value = '';
+  document.getElementById('change-pin-new').value = '';
+  document.getElementById('change-pin-confirm').value = '';
+  okEl.classList.remove('show');
+  errEl.classList.remove('show');
+  if(isFirst) {
+    title.textContent = '🔐 Criar seu PIN';
+    sub.textContent = 'Este é seu primeiro acesso. Crie um PIN de 4 dígitos que só você vai saber.';
+    oldWrap.style.display = 'none';
+    cancelBtn.style.display = 'none';
+  } else {
+    title.textContent = '🔐 Trocar PIN';
+    sub.textContent = 'Digite seu PIN atual e o novo PIN desejado.';
+    oldWrap.style.display = 'flex';
+    cancelBtn.style.display = 'block';
+  }
+  screen.classList.add('show');
+}
+
+window.closeChangePinScreen = () => {
+  document.getElementById('change-pin-screen').classList.remove('show');
+};
+
+window.openChangePinFromMenu = () => {
+  showChangePinScreen(false);
+};
+
+window.handleSavePin = async () => {
+  const errEl = document.getElementById('change-pin-err');
+  const okEl = document.getElementById('change-pin-ok');
+  errEl.classList.remove('show');
+  okEl.classList.remove('show');
+  const oldPin = document.getElementById('change-pin-old').value;
+  const newPin = document.getElementById('change-pin-new').value.replace(/\D/g,'');
+  const confirmPin = document.getElementById('change-pin-confirm').value.replace(/\D/g,'');
+  if(newPin !== confirmPin) {
+    errEl.textContent = 'Os PINs não coincidem. Tente novamente.';
+    errEl.classList.add('show');
+    return;
+  }
+  if(!/^\d{4}$/.test(newPin)) {
+    errEl.textContent = 'O PIN deve ter exatamente 4 dígitos numéricos.';
+    errEl.classList.add('show');
+    return;
+  }
+  const result = await updatePin(_currentUser, newPin, _changePinIsFirst ? null : oldPin, _changePinIsFirst);
+  if(!result.ok) {
+    errEl.textContent = result.msg;
+    errEl.classList.add('show');
+    return;
+  }
+  okEl.classList.add('show');
+  setTimeout(async () => {
+    document.getElementById('change-pin-screen').classList.remove('show');
+    if(_changePinIsFirst) await bootApp();
+  }, 1500);
+};
+
+// ─── LOGOUT ───────────────────────────────────────────────────────────────────
+window.logout = () => {
+  clearSession();
+  location.reload();
+};
+
 // ─── STATE ───────────────────────────────────────────────────────────────────
 const now = new Date();
 const S = {
@@ -608,39 +744,19 @@ const S = {
   cadTab: 'pessoas',
   filters: { tipo:'todos', status:'todos', pessoaId:'', catId:'', cartaoId:'', contaId:'' },
   data: { trans:[], cartoes:[], contas:[], pessoas:[], cats:[] },
-  wiz: null, // wizard state
+  wiz: null,
   editItem: null,
 };
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const MESES_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 function fmt(v){ return 'R$ ' + Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-
 function mesAnoStr(m,a){ return `${String(a)}-${String(m+1).padStart(2,'0')}`; }
+function tsToDate(ts){ if(!ts) return null; if(ts.toDate) return ts.toDate(); if(ts instanceof Date) return ts; return new Date(ts); }
+function fmtDate(ts){ const d=tsToDate(ts);if(!d)return'';return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+function fmtDateShort(ts){ const d=tsToDate(ts);if(!d)return'';return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`; }
 
-function tsToDate(ts){
-  if(!ts) return null;
-  if(ts.toDate) return ts.toDate();
-  if(ts instanceof Date) return ts;
-  return new Date(ts);
-}
-
-function fmtDate(ts){
-  const d = tsToDate(ts); if(!d) return '';
-  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-}
-
-function fmtDateShort(ts){
-  const d = tsToDate(ts); if(!d) return '';
-  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
-}
-
-// Verifica se o mesAno (formato "YYYY-MM") representa um mês ainda
-// no futuro em relação a hoje. É a fonte autoritativa sobre
-// "este item ainda não chegou" — independente do campo vencimento,
-// que pode estar com a data do mês original do lançamento recorrente.
 function isFutureMesAno(mesAno){
   if(!mesAno) return false;
   const [ano, mes] = mesAno.split('-').map(Number);
@@ -650,7 +766,6 @@ function isFutureMesAno(mesAno){
 
 function calcStatusDespesa(item){
   if(item.status === 'pago') return 'pago';
-  // Mês futuro: nunca pode estar atrasado, independente da data de vencimento salva
   if(isFutureMesAno(item.mesAno)) return 'pendente';
   const v = tsToDate(item.vencimento); if(!v) return 'pendente';
   const hoje = new Date(); hoje.setHours(0,0,0,0);
@@ -662,7 +777,6 @@ function calcStatusDespesa(item){
 
 function calcStatusReceita(item){
   if(item.status === 'recebido') return 'recebido';
-  // Mês futuro: sempre previsto
   if(isFutureMesAno(item.mesAno)) return 'previsto';
   const d = tsToDate(item.dataRelevante); if(!d) return 'previsto';
   const hoje = new Date(); hoje.setHours(0,0,0,0);
@@ -670,1479 +784,441 @@ function calcStatusReceita(item){
   return 'previsto';
 }
 
-function getStatus(item){
-  return item.tipo === 'despesa' ? calcStatusDespesa(item) : calcStatusReceita(item);
-}
+function getStatus(item){ return item.tipo==='despesa' ? calcStatusDespesa(item) : calcStatusReceita(item); }
 
 function badgeHtml(st){
-  const map = {
-    pago:['b-paid','Paga'],recv:['b-recv','Recebida'],recebido:['b-recv','Recebida'],
-    pendente:['b-pend','Pendente'],previsto:['b-prev','Pendente'],
-    prestes:['b-soon','Vence em breve'],vencida:['b-over','Atrasado'],
-    atrasado:['b-late','Atrasado']
-  };
-  const [cls,lbl] = map[st]||['b-pend',st];
+  const map={pago:['b-paid','Paga'],recv:['b-recv','Recebida'],recebido:['b-recv','Recebida'],pendente:['b-pend','Pendente'],previsto:['b-prev','Pendente'],prestes:['b-soon','Vence em breve'],vencida:['b-over','Atrasado'],atrasado:['b-late','Atrasado']};
+  const [cls,lbl]=map[st]||['b-pend',st];
   return `<span class="badge ${cls}">${lbl}</span>`;
 }
 
 function badgeHtmlFull(item){
-  const st = getStatus(item);
-  const map = {
-    pago:['b-paid','Paga'],recebido:['b-recv','Recebida'],
-    pendente:['b-pend','Pendente'],previsto:['b-prev','Pendente'],
-    prestes:['b-soon','Vence em breve'],vencida:['b-over','Atrasado'],
-    atrasado:['b-late','Atrasado']
-  };
-  let lbl = map[st]?.[1]||st;
-  const v = tsToDate(item.vencimento);
-  if(st==='prestes'&&v){
-    const hoje=new Date();hoje.setHours(0,0,0,0);
-    const diff=Math.floor((v-hoje)/(1000*60*60*24));
-    if(diff===0) lbl='Vence hoje';
-    else if(diff===1) lbl='Vence amanhã';
-    else lbl=`Vence em ${diff} dias`;
-  }
+  const st=getStatus(item);
+  const map={pago:['b-paid','Paga'],recebido:['b-recv','Recebida'],pendente:['b-pend','Pendente'],previsto:['b-prev','Pendente'],prestes:['b-soon','Vence em breve'],vencida:['b-over','Atrasado'],atrasado:['b-late','Atrasado']};
+  let lbl=map[st]?.[1]||st;
+  const v=tsToDate(item.vencimento);
+  if(st==='prestes'&&v){const hoje=new Date();hoje.setHours(0,0,0,0);const diff=Math.floor((v-hoje)/(1000*60*60*24));if(diff===0)lbl='Vence hoje';else if(diff===1)lbl='Vence amanhã';else lbl=`Vence em ${diff} dias`;}
   const [cls]=map[st]||['b-pend'];
   return `<span class="badge ${cls}">${lbl}</span>`;
 }
 
 function dataRelevante(item){
-  if(item.tipo==='despesa'){
-    if(item.status==='pago') return tsToDate(item.pagamentoData)||tsToDate(item.dataRelevante);
-    return tsToDate(item.vencimento)||tsToDate(item.dataRelevante);
-  }
-  if(item.status==='recebido') return tsToDate(item.pagamentoData)||tsToDate(item.dataRelevante);
+  if(item.tipo==='despesa'){if(item.status==='pago')return tsToDate(item.pagamentoData)||tsToDate(item.dataRelevante);return tsToDate(item.vencimento)||tsToDate(item.dataRelevante);}
+  if(item.status==='recebido')return tsToDate(item.pagamentoData)||tsToDate(item.dataRelevante);
   return tsToDate(item.dataRelevante);
 }
 
-function calcVencimentoFatura(dataCompra, diaFechamento, diaVencimento){
-  const compra = new Date(dataCompra);
-  const dia = compra.getDate();
-  let closeMonth = compra.getMonth();
-  let closeYear = compra.getFullYear();
-  if(dia > Number(diaFechamento)){
-    closeMonth += 1;
-    if(closeMonth > 11){ closeMonth = 0; closeYear += 1; }
-  }
-  let dueMonth = closeMonth;
-  let dueYear = closeYear;
-  if(Number(diaVencimento) <= Number(diaFechamento)){
-    dueMonth += 1;
-    if(dueMonth > 11){ dueMonth = 0; dueYear += 1; }
-  }
-  return new Date(dueYear, dueMonth, Number(diaVencimento));
+function calcVencimentoFatura(dataCompra,diaFechamento,diaVencimento){
+  const compra=new Date(dataCompra);const dia=compra.getDate();let closeMonth=compra.getMonth();let closeYear=compra.getFullYear();
+  if(dia>Number(diaFechamento)){closeMonth+=1;if(closeMonth>11){closeMonth=0;closeYear+=1;}}
+  let dueMonth=closeMonth;let dueYear=closeYear;
+  if(Number(diaVencimento)<=Number(diaFechamento)){dueMonth+=1;if(dueMonth>11){dueMonth=0;dueYear+=1;}}
+  return new Date(dueYear,dueMonth,Number(diaVencimento));
 }
 
-function nome(col, id){ return S.data[col]?.find(x=>x.id===id)?.nome||''; }
-
+function nome(col,id){ return S.data[col]?.find(x=>x.id===id)?.nome||''; }
 function getCartao(id){ return S.data.cartoes.find(x=>x.id===id); }
 function getConta(id){ return S.data.contas.find(x=>x.id===id); }
 function getPessoa(id){ return S.data.pessoas.find(x=>x.id===id); }
 function getCat(id){ return S.data.cats.find(x=>x.id===id); }
 
-// ─── FIRESTORE OPERATIONS ────────────────────────────────────────────────────
+// ─── FIRESTORE ────────────────────────────────────────────────────────────────
 async function loadData(){
-  const [transSnap, cartoesSnap, contasSnap, pessoasSnap, catsSnap] = await Promise.all([
-    getDocs(collection(db,'transacoes')),
-    getDocs(collection(db,'cartoes')),
-    getDocs(collection(db,'contas')),
-    getDocs(collection(db,'pessoas')),
-    getDocs(collection(db,'categorias')),
+  const [transSnap,cartoesSnap,contasSnap,pessoasSnap,catsSnap]=await Promise.all([
+    getDocs(collection(db,'transacoes')),getDocs(collection(db,'cartoes')),
+    getDocs(collection(db,'contas')),getDocs(collection(db,'pessoas')),getDocs(collection(db,'categorias')),
   ]);
-  S.data.trans = transSnap.docs.map(d=>({id:d.id,...d.data()}));
-  S.data.cartoes = cartoesSnap.docs.map(d=>({id:d.id,...d.data()}));
-  S.data.contas = contasSnap.docs.map(d=>({id:d.id,...d.data()}));
-  S.data.pessoas = pessoasSnap.docs.map(d=>({id:d.id,...d.data()}));
-  S.data.cats = catsSnap.docs.map(d=>({id:d.id,...d.data()}));
+  S.data.trans=transSnap.docs.map(d=>({id:d.id,...d.data()}));
+  S.data.cartoes=cartoesSnap.docs.map(d=>({id:d.id,...d.data()}));
+  S.data.contas=contasSnap.docs.map(d=>({id:d.id,...d.data()}));
+  S.data.pessoas=pessoasSnap.docs.map(d=>({id:d.id,...d.data()}));
+  S.data.cats=catsSnap.docs.map(d=>({id:d.id,...d.data()}));
 }
 
-async function saveItem(data){
-  const ref = await addDoc(collection(db,'transacoes'), data);
-  S.data.trans.push({id:ref.id,...data});
-  return ref.id;
+async function saveItem(data){ const ref=await addDoc(collection(db,'transacoes'),data);S.data.trans.push({id:ref.id,...data});return ref.id; }
+async function updateItem(id,data){ await updateDoc(doc(db,'transacoes',id),data);const idx=S.data.trans.findIndex(x=>x.id===id);if(idx>=0)S.data.trans[idx]={...S.data.trans[idx],...data}; }
+async function deleteItem(id){ await deleteDoc(doc(db,'transacoes',id));S.data.trans=S.data.trans.filter(x=>x.id!==id); }
+
+async function deleteItemsWithRecorrenciaId(recId,fromDate){
+  const toDelete=S.data.trans.filter(x=>{if(x.recorrenciaId!==recId)return false;if(!fromDate)return true;const dr=dataRelevante(x)||tsToDate(x.dataRelevante);return dr&&dr>=fromDate;});
+  for(const t of toDelete){await deleteDoc(doc(db,'transacoes',t.id));S.data.trans=S.data.trans.filter(x=>x.id!==t.id);}
 }
 
-async function updateItem(id, data){
-  await updateDoc(doc(db,'transacoes',id), data);
-  const idx = S.data.trans.findIndex(x=>x.id===id);
-  if(idx>=0) S.data.trans[idx] = {...S.data.trans[idx],...data};
+async function updateItemsWithRecorrenciaId(recId,fromDate,changes){
+  const toUpd=S.data.trans.filter(x=>{if(x.recorrenciaId!==recId)return false;if(!fromDate)return true;const dr=dataRelevante(x)||tsToDate(x.dataRelevante);return dr&&dr>=fromDate;});
+  for(const t of toUpd){await updateDoc(doc(db,'transacoes',t.id),changes);const idx=S.data.trans.findIndex(x=>x.id===t.id);if(idx>=0)S.data.trans[idx]={...S.data.trans[idx],...changes};}
 }
 
-async function deleteItem(id){
-  await deleteDoc(doc(db,'transacoes',id));
-  S.data.trans = S.data.trans.filter(x=>x.id!==id);
-}
-
-async function deleteItemsWithRecorrenciaId(recId, fromDate){
-  const toDelete = S.data.trans.filter(x=>{
-    if(x.recorrenciaId!==recId) return false;
-    if(!fromDate) return true;
-    const dr = dataRelevante(x)||tsToDate(x.dataRelevante);
-    return dr && dr >= fromDate;
-  });
-  for(const t of toDelete){
-    await deleteDoc(doc(db,'transacoes',t.id));
-    S.data.trans = S.data.trans.filter(x=>x.id!==t.id);
-  }
-}
-
-async function updateItemsWithRecorrenciaId(recId, fromDate, changes){
-  const toUpd = S.data.trans.filter(x=>{
-    if(x.recorrenciaId!==recId) return false;
-    if(!fromDate) return true;
-    const dr = dataRelevante(x)||tsToDate(x.dataRelevante);
-    return dr && dr >= fromDate;
-  });
-  for(const t of toUpd){
-    await updateDoc(doc(db,'transacoes',t.id), changes);
-    const idx = S.data.trans.findIndex(x=>x.id===t.id);
-    if(idx>=0) S.data.trans[idx] = {...S.data.trans[idx],...changes};
-  }
-}
-
-// ─── RECORRÊNCIA GENERATOR ───────────────────────────────────────────────────
-function gerarRecorrencias(base, dataInicio, meses, recId, tipo){
-  const items = [];
+function gerarRecorrencias(base,dataInicio,meses,recId,tipo){
+  const items=[];
   for(let i=0;i<meses;i++){
-    const d = new Date(dataInicio);
-    d.setMonth(d.getMonth()+i);
-    const ma = mesAnoStr(d.getMonth(), d.getFullYear());
-    if(tipo==='despesa'){
-      items.push({...base, recorrenciaId:recId, dataRelevante:d, vencimento:d, mesAno:ma, status:'pendente'});
-    } else {
-      items.push({...base, recorrenciaId:recId, dataRelevante:d, mesAno:ma, status:'previsto'});
-    }
+    const d=new Date(dataInicio);d.setMonth(d.getMonth()+i);
+    const ma=mesAnoStr(d.getMonth(),d.getFullYear());
+    if(tipo==='despesa') items.push({...base,recorrenciaId:recId,dataRelevante:d,vencimento:d,mesAno:ma,status:'pendente'});
+    else items.push({...base,recorrenciaId:recId,dataRelevante:d,mesAno:ma,status:'previsto'});
   }
   return items;
 }
 
-// Parcelamento: gera N parcelas no cartão
-function gerarParcelas(base, primeiraFatura, totalParcelas, recId){
-  const items = [];
+function gerarParcelas(base,primeiraFatura,totalParcelas,recId){
+  const items=[];
   for(let i=0;i<totalParcelas;i++){
-    const d = new Date(primeiraFatura);
-    d.setMonth(d.getMonth()+i);
-    const ma = mesAnoStr(d.getMonth(), d.getFullYear());
-    items.push({
-      ...base,
-      recorrenciaId: recId,
-      dataRelevante: d, vencimento: d, mesAno: ma,
-      parcelaAtual: i+1, totalParcelas,
-      status: 'pendente',
-      descricao: `${base.descricaoBase}`
-    });
+    const d=new Date(primeiraFatura);d.setMonth(d.getMonth()+i);
+    const ma=mesAnoStr(d.getMonth(),d.getFullYear());
+    items.push({...base,recorrenciaId:recId,dataRelevante:d,vencimento:d,mesAno:ma,parcelaAtual:i+1,totalParcelas,status:'pendente',descricao:`${base.descricaoBase}`});
   }
   return items;
 }
 
-// ─── RENDER ENGINE ───────────────────────────────────────────────────────────
-function render(){
-  const app = document.getElementById('app');
-  if(S.view==='home') renderHome(app);
-  else renderCadastros(app);
-}
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function render(){ const app=document.getElementById('app');if(S.view==='home')renderHome(app);else renderCadastros(app); }
 
 function renderHome(app){
-  const mesStr = mesAnoStr(S.mes, S.ano);
-  let trans = S.data.trans.filter(t=> t.mesAno === mesStr);
-
-  // Calcular resumo
-  let totalRec=0, totalDesp=0;
-  trans.forEach(t=>{
-    if(t.tipo==='receita'&&t.status==='recebido') totalRec+=Number(t.valor||0);
-    if(t.tipo==='despesa'&&t.status==='pago') totalDesp+=Number(t.valor||0);
-    // Para receitas previstas, contar na estimativa também?
-    // Prompt diz: 3 indicadores. Usar apenas confirmadas/pagas.
-  });
-  // Actually let's count predicted too for a forecast view
-  // Re-reading prompt: "Receitas do mês / Despesas do mês / Saldo"
-  // Let's include previstas/pendentes for a full picture
-  let totalRecAll=0, totalDespAll=0;
-  trans.forEach(t=>{
-    if(t.tipo==='receita') totalRecAll+=Number(t.valor||0);
-    if(t.tipo==='despesa') totalDespAll+=Number(t.valor||0);
-  });
-  const saldo = totalRecAll - totalDespAll;
-
-  // Status counts
-  const pendentes = trans.filter(t=>t.tipo==='despesa'&&calcStatusDespesa(t)==='pendente').length;
-  const vencidas = trans.filter(t=>t.tipo==='despesa'&&calcStatusDespesa(t)==='vencida').length;
-  const prestes = trans.filter(t=>t.tipo==='despesa'&&calcStatusDespesa(t)==='prestes').length;
-  const previstas = trans.filter(t=>t.tipo==='receita'&&calcStatusReceita(t)==='previsto').length;
-
-  // Apply filters
-  let filtered = [...trans];
-  const f = S.filters;
-  if(f.tipo&&f.tipo!=='todos') filtered = filtered.filter(t=>t.tipo===f.tipo);
-  if(f.status&&f.status!=='todos'){
-    filtered = filtered.filter(t=>{
-      const st = getStatus(t);
-      if(f.status==='pago') return st==='pago'||st==='recebido';
-      if(f.status==='pendente') return st==='pendente'||st==='prestes'||st==='previsto';
-      if(f.status==='atrasado') return st==='vencida'||st==='atrasado';
-      return st===f.status;
-    });
-  }
-  if(f.pessoaId) filtered = filtered.filter(t=>t.pessoaId===f.pessoaId);
-  if(f.catId) filtered = filtered.filter(t=>t.catId===f.catId);
-  if(f.cartaoId) filtered = filtered.filter(t=>t.cartaoId===f.cartaoId);
-  if(f.contaId) filtered = filtered.filter(t=>t.contaId===f.contaId);
-
-  // Sort by data relevante
-  filtered.sort((a,b)=>{
-    const da = dataRelevante(a), db2 = dataRelevante(b);
-    if(!da&&!db2) return 0; if(!da) return 1; if(!db2) return -1;
-    const diff = da - db2;
-    if(diff!==0) return diff;
-    // Tie: open first
-    const stA = getStatus(a), stB = getStatus(b);
-    const openSt = ['pendente','previsto','prestes','vencida','atrasado'];
-    const aOpen = openSt.includes(stA)?0:1;
-    const bOpen = openSt.includes(stB)?0:1;
-    return aOpen - bOpen;
-  });
-
-
-  // Build HTML
-  const hasFilters = Object.values(f).some(v=>v&&v!=='todos');
-  const filtTotal = filtered.reduce((a,t)=>a+Number(t.valor||0),0);
-
-  // Chips ativos
-  let chipsHtml = '';
+  const mesStr=mesAnoStr(S.mes,S.ano);
+  let trans=S.data.trans.filter(t=>t.mesAno===mesStr);
+  let totalRecAll=0,totalDespAll=0;
+  trans.forEach(t=>{if(t.tipo==='receita')totalRecAll+=Number(t.valor||0);if(t.tipo==='despesa')totalDespAll+=Number(t.valor||0);});
+  const saldo=totalRecAll-totalDespAll;
+  const pendentes=trans.filter(t=>t.tipo==='despesa'&&calcStatusDespesa(t)==='pendente').length;
+  const vencidas=trans.filter(t=>t.tipo==='despesa'&&calcStatusDespesa(t)==='vencida').length;
+  const prestes=trans.filter(t=>t.tipo==='despesa'&&calcStatusDespesa(t)==='prestes').length;
+  const previstas=trans.filter(t=>t.tipo==='receita'&&calcStatusReceita(t)==='previsto').length;
+  let filtered=[...trans];
+  const f=S.filters;
+  if(f.tipo&&f.tipo!=='todos') filtered=filtered.filter(t=>t.tipo===f.tipo);
+  if(f.status&&f.status!=='todos'){filtered=filtered.filter(t=>{const st=getStatus(t);if(f.status==='pago')return st==='pago'||st==='recebido';if(f.status==='pendente')return st==='pendente'||st==='prestes'||st==='previsto';if(f.status==='atrasado')return st==='vencida'||st==='atrasado';return st===f.status;});}
+  if(f.pessoaId) filtered=filtered.filter(t=>t.pessoaId===f.pessoaId);
+  if(f.catId) filtered=filtered.filter(t=>t.catId===f.catId);
+  if(f.cartaoId) filtered=filtered.filter(t=>t.cartaoId===f.cartaoId);
+  if(f.contaId) filtered=filtered.filter(t=>t.contaId===f.contaId);
+  filtered.sort((a,b)=>{const da=dataRelevante(a),db2=dataRelevante(b);if(!da&&!db2)return 0;if(!da)return 1;if(!db2)return -1;const diff=da-db2;if(diff!==0)return diff;const stA=getStatus(a),stB=getStatus(b);const openSt=['pendente','previsto','prestes','vencida','atrasado'];return(openSt.includes(stA)?0:1)-(openSt.includes(stB)?0:1);});
+  const hasFilters=Object.values(f).some(v=>v&&v!=='todos');
+  const filtTotal=filtered.reduce((a,t)=>a+Number(t.valor||0),0);
+  let chipsHtml='';
   if(f.tipo&&f.tipo!=='todos') chipsHtml+=`<span class="f-chip" onclick="removeFilter('tipo')"><span>${f.tipo==='receita'?'Receitas':'Despesas'}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
   if(f.status&&f.status!=='todos') chipsHtml+=`<span class="f-chip" onclick="removeFilter('status')"><span>${statusLabel(f.status)}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
   if(f.pessoaId) chipsHtml+=`<span class="f-chip" onclick="removeFilter('pessoaId')"><span>${nome('pessoas',f.pessoaId)}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
   if(f.catId) chipsHtml+=`<span class="f-chip" onclick="removeFilter('catId')"><span>${nome('cats',f.catId)}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
   if(f.cartaoId) chipsHtml+=`<span class="f-chip" onclick="removeFilter('cartaoId')"><span>${nome('cartoes',f.cartaoId)}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
   if(f.contaId) chipsHtml+=`<span class="f-chip" onclick="removeFilter('contaId')"><span>${nome('contas',f.contaId)}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>`;
+  const pessoaOpts=S.data.pessoas.filter(p=>p.status!=='inativo').map(p=>`<option value="${p.id}" ${f.pessoaId===p.id?'selected':''}>${p.nome}</option>`).join('');
+  const catOpts=S.data.cats.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.catId===c.id?'selected':''}>${c.nome}</option>`).join('');
+  const cartaoOpts=S.data.cartoes.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.cartaoId===c.id?'selected':''}>${c.nome}</option>`).join('');
+  const contaOpts=S.data.contas.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.contaId===c.id?'selected':''}>${c.nome}</option>`).join('');
+  const statusOpts=`<option value="todos" ${f.status==='todos'?'selected':''}>Todos os status</option><option value="pago" ${f.status==='pago'?'selected':''}>Pago / recebido</option><option value="pendente" ${f.status==='pendente'?'selected':''}>Pendente</option><option value="atrasado" ${f.status==='atrasado'?'selected':''}>Atrasado</option>`;
+  const tipoOpts=`<option value="todos" ${f.tipo==='todos'?'selected':''}>Todos</option><option value="receita" ${f.tipo==='receita'?'selected':''}>Receitas</option><option value="despesa" ${f.tipo==='despesa'?'selected':''}>Despesas</option>`;
+  let tableRows='';
+  if(filtered.length===0){tableRows=`<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--txt3);font-size:14px">${hasFilters?'Nenhum item encontrado com este filtro':'Você ainda não lançou nada neste mês'}</td></tr>`;}
+  else{filtered.forEach(t=>{const st=getStatus(t);const dr=dataRelevante(t);const origem=t.cartaoId?nome('cartoes',t.cartaoId):t.contaId?nome('contas',t.contaId):t.formaPagamento||'';const parcela=t.totalParcelas?` <span style="color:var(--txt3);font-size:12px">${t.parcelaAtual}/${t.totalParcelas}</span>`:'';const descBase=t.descricaoBase||t.descricao||'';tableRows+=`<tr><td style="font-size:13px;color:var(--txt2);white-space:nowrap">${dr?fmtDate(dr):''}</td><td><span class="badge ${t.tipo==='receita'?'b-prev':'b-pend'}" style="font-size:11px">${t.tipo==='receita'?'↓ Receita':'↑ Despesa'}</span></td><td><div class="desc-name">${descBase}${parcela}</div></td><td style="font-size:13px;color:var(--txt2)">${t.pessoaId?nome('pessoas',t.pessoaId):''}</td><td style="font-size:13px;color:var(--txt2)">${t.catId?nome('cats',t.catId):''}</td><td style="font-size:13px;color:var(--txt2)">${origem}</td><td>${badgeHtmlFull(t)}${st==='previsto'?` <button class="confirm-recv-btn" onclick="confirmRecebimento('${t.id}')">Confirmar</button>`:''}</td><td class="val ${t.tipo==='receita'?'r':''}">${fmt(t.valor)}</td><td class="acts">${st==='pendente'||st==='prestes'||st==='vencida'?`<button class="abtn" title="Marcar como paga" onclick="marcarPago('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>`:''}<button class="abtn" title="Editar" onclick="editItem('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="abtn" title="Excluir" onclick="confirmDelete('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button></td></tr>`;});}
+  let cardsHtml='';
+  if(filtered.length===0){cardsHtml=`<div class="empty"><div class="empty-emoji">${hasFilters?'🔍':'📋'}</div><div class="empty-t">${hasFilters?'Nenhum item encontrado':'Você ainda não lançou nada neste mês'}</div><div class="empty-s">${hasFilters?'Tente remover algum filtro':'Seus lançamentos do mês vão aparecer aqui'}</div>${!hasFilters?`<button class="btn btn-p" onclick="openLaunchMenu(event)">+ Lançar agora</button>`:''}</div>`;}
+  else{filtered.forEach(t=>{const st=getStatus(t);const dr=dataRelevante(t);const origem=t.cartaoId?nome('cartoes',t.cartaoId):t.contaId?nome('contas',t.contaId):t.formaPagamento||'';const parcela=t.totalParcelas?` ${t.parcelaAtual}/${t.totalParcelas}`:'';const descBase=t.descricaoBase||t.descricao||'';cardsHtml+=`<div class="crd" onclick="openSheet('${t.id}')"><div class="crd-r1"><div class="crd-desc">${descBase}${parcela?`<span style="font-size:12px;color:var(--txt3);font-weight:400"> ${parcela}</span>`:''}</div><div class="crd-val ${t.tipo==='receita'?'r':''}">${fmt(t.valor)}</div></div><div class="crd-r2">${dr?fmtDateShort(dr):''}</div><div class="crd-r3">${t.pessoaId?nome('pessoas',t.pessoaId):'—'}</div><div class="crd-r4">${origem||'—'}</div><div class="crd-r5">${badgeHtmlFull(t)}</div></div>`;});}
 
-  // Filter selects
-  const pessoaOpts = S.data.pessoas.filter(p=>p.status!=='inativo').map(p=>`<option value="${p.id}" ${f.pessoaId===p.id?'selected':''}>${p.nome}</option>`).join('');
-  const catOpts = S.data.cats.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.catId===c.id?'selected':''}>${c.nome}</option>`).join('');
-  const cartaoOpts = S.data.cartoes.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.cartaoId===c.id?'selected':''}>${c.nome}</option>`).join('');
-  const contaOpts = S.data.contas.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.contaId===c.id?'selected':''}>${c.nome}</option>`).join('');
-
-  const statusOpts = `
-    <option value="todos" ${f.status==='todos'?'selected':''}>Todos os status</option>
-    <option value="pago" ${f.status==='pago'?'selected':''}>Pago / recebido</option>
-    <option value="pendente" ${f.status==='pendente'?'selected':''}>Pendente</option>
-    <option value="atrasado" ${f.status==='atrasado'?'selected':''}>Atrasado</option>`;
-
-  const tipoOpts = `
-    <option value="todos" ${f.tipo==='todos'?'selected':''}>Todos</option>
-    <option value="receita" ${f.tipo==='receita'?'selected':''}>Receitas</option>
-    <option value="despesa" ${f.tipo==='despesa'?'selected':''}>Despesas</option>`;
-
-  // Table rows
-  let tableRows = '';
-  if(filtered.length===0){
-    tableRows = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--txt3);font-size:14px">${hasFilters?'Nenhum item encontrado com este filtro':'Você ainda não lançou nada neste mês'}</td></tr>`;
-  } else {
-    filtered.forEach(t=>{
-      const st = getStatus(t);
-      const dr = dataRelevante(t);
-      const origem = t.cartaoId ? nome('cartoes',t.cartaoId) : t.contaId ? nome('contas',t.contaId) : t.formaPagamento||'';
-      const parcela = t.totalParcelas ? ` <span style="color:var(--txt3);font-size:12px">${t.parcelaAtual}/${t.totalParcelas}</span>` : '';
-      const descBase = t.descricaoBase || t.descricao || '';
-      tableRows += `
-        <tr>
-          <td style="font-size:13px;color:var(--txt2);white-space:nowrap">${dr?fmtDate(dr):''}</td>
-          <td><span class="badge ${t.tipo==='receita'?'b-prev':'b-pend'}" style="font-size:11px">${t.tipo==='receita'?'↓ Receita':'↑ Despesa'}</span></td>
-          <td><div class="desc-name">${descBase}${parcela}</div></td>
-          <td style="font-size:13px;color:var(--txt2)">${t.pessoaId?nome('pessoas',t.pessoaId):''}</td>
-          <td style="font-size:13px;color:var(--txt2)">${t.catId?nome('cats',t.catId):''}</td>
-          <td style="font-size:13px;color:var(--txt2)">${origem}</td>
-          <td>${badgeHtmlFull(t)}${st==='previsto'?` <button class="confirm-recv-btn" onclick="confirmRecebimento('${t.id}')">Confirmar</button>`:''}</td>
-          <td class="val ${t.tipo==='receita'?'r':''}">${fmt(t.valor)}</td>
-          <td class="acts">
-            ${st==='pendente'||st==='prestes'||st==='vencida'?`<button class="abtn" title="Marcar como paga" onclick="marcarPago('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button>`:''}
-            <button class="abtn" title="Editar" onclick="editItem('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-            <button class="abtn" title="Excluir" onclick="confirmDelete('${t.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>
-          </td>
-        </tr>`;
-    });
-  }
-
-  // Card items (mobile)
-  let cardsHtml = '';
-  if(filtered.length===0){
-    cardsHtml = `<div class="empty">
-      <div class="empty-emoji">${hasFilters?'🔍':'📋'}</div>
-      <div class="empty-t">${hasFilters?'Nenhum item encontrado':'Você ainda não lançou nada neste mês'}</div>
-      <div class="empty-s">${hasFilters?'Tente remover algum filtro':'Seus lançamentos do mês vão aparecer aqui'}</div>
-      ${!hasFilters?`<button class="btn btn-p" onclick="openLaunchMenu(event)">+ Lançar agora</button>`:''}
-    </div>`;
-  } else {
-    filtered.forEach(t=>{
-      const st = getStatus(t);
-      const dr = dataRelevante(t);
-      const origem = t.cartaoId ? nome('cartoes',t.cartaoId) : t.contaId ? nome('contas',t.contaId) : t.formaPagamento||'';
-      const parcela = t.totalParcelas ? ` ${t.parcelaAtual}/${t.totalParcelas}` : '';
-      const descBase = t.descricaoBase || t.descricao || '';
-      cardsHtml += `
-        <div class="crd" onclick="openSheet('${t.id}')">
-          <div class="crd-r1">
-            <div class="crd-desc">${descBase}${parcela?`<span style="font-size:12px;color:var(--txt3);font-weight:400"> ${parcela}</span>`:''}</div>
-            <div class="crd-val ${t.tipo==='receita'?'r':''}">${fmt(t.valor)}</div>
-          </div>
-          <div class="crd-r2">${dr?fmtDateShort(dr):''}</div>
-          <div class="crd-r3">${t.pessoaId?nome('pessoas',t.pessoaId):'—'}</div>
-          <div class="crd-r4">${origem||'—'}</div>
-          <div class="crd-r5">${badgeHtmlFull(t)}</div>
-        </div>`;
-    });
-  }
-
-
-  app.innerHTML = `
-    <div id="hdr">
-      <div class="hdr-in">
-        <div class="hdr-l">
-          <button class="sel-btn" id="btn-mes" onclick="openPicker('mes',event)">
-            ${MESES[S.mes]} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <button class="sel-btn" id="btn-ano" onclick="openPicker('ano',event)">
-            ${S.ano} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-        </div>
-        <div class="hdr-r">
-          <button class="btn btn-p" id="btn-lancar" onclick="openLaunchMenu(event)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Lançar
-          </button>
-          <button class="icon-btn" onclick="toggleMenu(event)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-        </div>
+  app.innerHTML=`
+    <div id="hdr"><div class="hdr-in">
+      <div class="hdr-l">
+        <button class="sel-btn" id="btn-mes" onclick="openPicker('mes',event)">${MESES[S.mes]} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <button class="sel-btn" id="btn-ano" onclick="openPicker('ano',event)">${S.ano} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></button>
       </div>
-    </div>
+      <div class="hdr-r">
+        <button class="btn btn-p" id="btn-lancar" onclick="openLaunchMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Lançar</button>
+        <button class="icon-btn" onclick="toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
+    </div></div>
     <div id="main">
-      <div class="summary">
-        <div class="summary-in">
-          <div class="sum-item">
-            <div class="sum-lbl">Receitas</div>
-            <div class="sum-val pos">${fmt(totalRecAll)}</div>
-          </div>
-          <div class="sum-item">
-            <div class="sum-lbl">Despesas</div>
-            <div class="sum-val">${fmt(totalDespAll)}</div>
-          </div>
-          <div class="sum-item">
-            <div class="sum-lbl">Saldo</div>
-            <div class="sum-val ${saldo>0?'pos':saldo<0?'neg':''}">${fmt(saldo)}</div>
-          </div>
-        </div>
-      </div>
+      <div class="summary"><div class="summary-in">
+        <div class="sum-item"><div class="sum-lbl">Receitas</div><div class="sum-val pos">${fmt(totalRecAll)}</div></div>
+        <div class="sum-item"><div class="sum-lbl">Despesas</div><div class="sum-val">${fmt(totalDespAll)}</div></div>
+        <div class="sum-item"><div class="sum-lbl">Saldo</div><div class="sum-val ${saldo>0?'pos':saldo<0?'neg':''}">${fmt(saldo)}</div></div>
+      </div></div>
       <div class="statusbar">
         ${pendentes+prestes+previstas>0?`<span class="schip schip-b">${pendentes+prestes+previstas} pendente${pendentes+prestes+previstas>1?'s':''}</span>`:''}
         ${vencidas>0?`<span class="schip schip-r">${vencidas} atrasada${vencidas>1?'s':''}</span>`:''}
       </div>
-
-      <!-- Desktop filters -->
-      <div class="filters-wrap f-desktop">
-        <div class="f-row">
-          <select class="f-sel" onchange="setFilter('tipo',this.value)">${tipoOpts}</select>
-          <select class="f-sel" onchange="setFilter('status',this.value)">${statusOpts}</select>
-          ${S.data.pessoas.length>0?`<select class="f-sel" onchange="setFilter('pessoaId',this.value)"><option value="">Todas as pessoas</option>${pessoaOpts}</select>`:''}
-          ${S.data.cats.length>0?`<select class="f-sel" onchange="setFilter('catId',this.value)"><option value="">Todas as categorias</option>${catOpts}</select>`:''}
-          ${S.data.cartoes.length>0?`<select class="f-sel" onchange="setFilter('cartaoId',this.value)"><option value="">Todos os cartões</option>${cartaoOpts}</select>`:''}
-          ${S.data.contas.length>0?`<select class="f-sel" onchange="setFilter('contaId',this.value)"><option value="">Todas as contas</option>${contaOpts}</select>`:''}
-          ${hasFilters?`<button class="btn btn-ghost" style="font-size:13px;padding:5px 10px" onclick="clearFilters()">Limpar filtros</button>`:''}
-        </div>
-        ${chipsHtml?`<div class="f-chips">${chipsHtml}</div>`:''}
-      </div>
-
-      <!-- Mobile filters -->
-      <div class="filters-wrap f-mobile">
-        <div class="f-mobile-row">
-          <select class="f-sel-m" onchange="setFilter('tipo',this.value)">${tipoOpts}</select>
-          <select class="f-sel-m" onchange="setFilter('status',this.value)">${statusOpts}</select>
-          <button class="f-more-btn" onclick="openMobileFilters()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-            Mais
-          </button>
-        </div>
-        ${chipsHtml?`<div class="f-chips">${chipsHtml}</div>`:''}
-      </div>
-
+      <div class="filters-wrap f-desktop"><div class="f-row">
+        <select class="f-sel" onchange="setFilter('tipo',this.value)">${tipoOpts}</select>
+        <select class="f-sel" onchange="setFilter('status',this.value)">${statusOpts}</select>
+        ${S.data.pessoas.length>0?`<select class="f-sel" onchange="setFilter('pessoaId',this.value)"><option value="">Todas as pessoas</option>${pessoaOpts}</select>`:''}
+        ${S.data.cats.length>0?`<select class="f-sel" onchange="setFilter('catId',this.value)"><option value="">Todas as categorias</option>${catOpts}</select>`:''}
+        ${S.data.cartoes.length>0?`<select class="f-sel" onchange="setFilter('cartaoId',this.value)"><option value="">Todos os cartões</option>${cartaoOpts}</select>`:''}
+        ${S.data.contas.length>0?`<select class="f-sel" onchange="setFilter('contaId',this.value)"><option value="">Todas as contas</option>${contaOpts}</select>`:''}
+        ${hasFilters?`<button class="btn btn-ghost" style="font-size:13px;padding:5px 10px" onclick="clearFilters()">Limpar filtros</button>`:''}
+      </div>${chipsHtml?`<div class="f-chips">${chipsHtml}</div>`:''}</div>
+      <div class="filters-wrap f-mobile"><div class="f-mobile-row">
+        <select class="f-sel-m" onchange="setFilter('tipo',this.value)">${tipoOpts}</select>
+        <select class="f-sel-m" onchange="setFilter('status',this.value)">${statusOpts}</select>
+        <button class="f-more-btn" onclick="openMobileFilters()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>Mais</button>
+      </div>${chipsHtml?`<div class="f-chips">${chipsHtml}</div>`:''}</div>
       <div class="list-info">${filtered.length>0?`Mostrando ${filtered.length} ${filtered.length===1?'item':'itens'} · Total: <strong>${fmt(filtTotal)}</strong>`:''}</div>
-
-      <!-- Desktop table -->
       <div class="list-wrap tbl-wrap">
-        ${filtered.length===0&&!hasFilters ? `
-          <div class="empty">
-            <div class="empty-emoji">📋</div>
-            <div class="empty-t">Você ainda não lançou nada neste mês</div>
-            <div class="empty-s">Seus lançamentos de receitas e despesas vão aparecer aqui</div>
-            <button class="btn btn-p" onclick="openLaunchMenu(event)">+ Lançar agora</button>
-          </div>` : `
-          <table class="tbl">
-            <thead><tr>
-              <th>Data</th><th>Tipo</th><th>Descrição</th><th>Pessoa</th><th>Categoria</th><th>Origem</th><th>Status</th>
-              <th style="text-align:right">Valor</th><th></th>
-            </tr></thead>
-            <tbody>${tableRows}</tbody>
-          </table>`}
+        ${filtered.length===0&&!hasFilters?`<div class="empty"><div class="empty-emoji">📋</div><div class="empty-t">Você ainda não lançou nada neste mês</div><div class="empty-s">Seus lançamentos de receitas e despesas vão aparecer aqui</div><button class="btn btn-p" onclick="openLaunchMenu(event)">+ Lançar agora</button></div>`:`<table class="tbl"><thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th>Pessoa</th><th>Categoria</th><th>Origem</th><th>Status</th><th style="text-align:right">Valor</th><th></th></tr></thead><tbody>${tableRows}</tbody></table>`}
       </div>
-
-      <!-- Mobile cards -->
       <div class="list-wrap cards">${cardsHtml}</div>
-
     </div>`;
 }
 
 function renderCadastros(app){
-  const tab = S.cadTab;
-  const tabs = [{k:'pessoas',l:'Pessoas'},{k:'categorias',l:'Categorias'},{k:'cartoes',l:'Cartões'},{k:'contas',l:'Contas'}];
-
-  let items = [];
-  let addLabel = '';
-  if(tab==='pessoas'){ items=S.data.pessoas; addLabel='Nova pessoa'; }
-  else if(tab==='categorias'){ items=S.data.cats; addLabel='Nova categoria'; }
-  else if(tab==='cartoes'){ items=S.data.cartoes; addLabel='Novo cartão'; }
-  else { items=S.data.contas; addLabel='Nova conta'; }
-
-  const itemsHtml = items.length===0 ?
-    `<div class="empty"><div class="empty-emoji">📁</div><div class="empty-t">Nenhum cadastro ainda</div><div class="empty-s">Clique em "${addLabel}" para começar</div></div>` :
-    items.map(it=>{
-      let sub = '';
-      if(tab==='cartoes') sub=`Fecha dia ${it.diaFechamento} · Vence dia ${it.diaVencimento}${it.limite?` · Limite ${fmt(it.limite)}`:''}`;
-      if(tab==='contas') sub=tipoContaLabel(it.tipo);
-      if(tab==='categorias') sub=it.tipo==='receita'?'Receita':it.tipo==='despesa'?'Despesa':'Geral';
-      return `
-        <div class="cad-item">
-          <div class="cad-name">
-            <div class="cad-n">${it.nome}</div>
-            ${sub?`<div class="cad-s">${sub}</div>`:''}
-          </div>
-          <span class="cad-badge ${it.status!=='inativo'?'b-on':'b-off'}">${it.status!=='inativo'?'Ativo':'Inativo'}</span>
-          <button class="abtn" onclick="editCadastro('${tab}','${it.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="abtn" style="color:var(--red)" onclick="deleteCadastro('${tab}','${it.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>
-        </div>`;
-    }).join('');
-
-  app.innerHTML = `
-    <div id="hdr">
-      <div class="hdr-in">
-        <div class="hdr-l">
-          <button class="icon-btn" onclick="setView('home')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-          <span style="font-size:16px;font-weight:800">Cadastros</span>
-        </div>
-        <div class="hdr-r">
-          <button class="icon-btn" onclick="toggleMenu(event)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
+  const tab=S.cadTab;
+  const tabs=[{k:'pessoas',l:'Pessoas'},{k:'categorias',l:'Categorias'},{k:'cartoes',l:'Cartões'},{k:'contas',l:'Contas'}];
+  let items=[];let addLabel='';
+  if(tab==='pessoas'){items=S.data.pessoas;addLabel='Nova pessoa';}
+  else if(tab==='categorias'){items=S.data.cats;addLabel='Nova categoria';}
+  else if(tab==='cartoes'){items=S.data.cartoes;addLabel='Novo cartão';}
+  else{items=S.data.contas;addLabel='Nova conta';}
+  const itemsHtml=items.length===0?`<div class="empty"><div class="empty-emoji">📁</div><div class="empty-t">Nenhum cadastro ainda</div><div class="empty-s">Clique em "${addLabel}" para começar</div></div>`:items.map(it=>{let sub='';if(tab==='cartoes')sub=`Fecha dia ${it.diaFechamento} · Vence dia ${it.diaVencimento}${it.limite?` · Limite ${fmt(it.limite)}`:''}`;if(tab==='contas')sub=tipoContaLabel(it.tipo);if(tab==='categorias')sub=it.tipo==='receita'?'Receita':it.tipo==='despesa'?'Despesa':'Geral';return`<div class="cad-item"><div class="cad-name"><div class="cad-n">${it.nome}</div>${sub?`<div class="cad-s">${sub}</div>`:''}</div><span class="cad-badge ${it.status!=='inativo'?'b-on':'b-off'}">${it.status!=='inativo'?'Ativo':'Inativo'}</span><button class="abtn" onclick="editCadastro('${tab}','${it.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="abtn" style="color:var(--red)" onclick="deleteCadastro('${tab}','${it.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button></div>`;}).join('');
+  app.innerHTML=`
+    <div id="hdr"><div class="hdr-in">
+      <div class="hdr-l"><button class="icon-btn" onclick="setView('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><span style="font-size:16px;font-weight:800">Cadastros</span></div>
+      <div class="hdr-r"><button class="icon-btn" onclick="toggleMenu(event)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button></div>
+    </div></div>
     <div id="main">
-      <div class="cad-hdr">
-        <div class="tab-nav">
-          ${tabs.map(t=>`<button class="tab-btn ${tab===t.k?'act':''}" onclick="setCadTab('${t.k}')">${t.l}</button>`).join('')}
-        </div>
-        <button class="btn btn-p" onclick="openCadastroForm('${tab}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          ${addLabel}
-        </button>
-      </div>
-      <div class="cad-subhdr">
-        <span class="cad-count">${items.length} ${items.length===1?'cadastro':'cadastros'}</span>
-      </div>
+      <div class="cad-hdr"><div class="tab-nav">${tabs.map(t=>`<button class="tab-btn ${tab===t.k?'act':''}" onclick="setCadTab('${t.k}')">${t.l}</button>`).join('')}</div><button class="btn btn-p" onclick="openCadastroForm('${tab}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>${addLabel}</button></div>
+      <div class="cad-subhdr"><span class="cad-count">${items.length} ${items.length===1?'cadastro':'cadastros'}</span></div>
       <div class="cad-list">${itemsHtml}</div>
     </div>`;
 }
 
 // ─── UI HELPERS ───────────────────────────────────────────────────────────────
-function tipoContaLabel(t){
-  const m={corrente:'Conta corrente',poupanca:'Poupança',digital:'Carteira digital',dinheiro:'Dinheiro físico'};
-  return m[t]||t||'';
-}
-function statusLabel(s){
-  const m={pago:'Pago / recebido',pendente:'Pendente',atrasado:'Atrasado'};
-  return m[s]||s;
-}
+function tipoContaLabel(t){const m={corrente:'Conta corrente',poupanca:'Poupança',digital:'Carteira digital',dinheiro:'Dinheiro físico'};return m[t]||t||'';}
+function statusLabel(s){const m={pago:'Pago / recebido',pendente:'Pendente',atrasado:'Atrasado'};return m[s]||s;}
 
-// ─── GLOBAL FUNCTIONS (exposed to HTML) ──────────────────────────────────────
-window.setView = (v)=>{ S.view=v; render(); };
-window.setCadTab = (t)=>{ S.cadTab=t; render(); };
-window.setFilter = (k,v)=>{ S.filters[k]=v; render(); };
-window.removeFilter = (k)=>{ S.filters[k]=k==='tipo'||k==='status'?'todos':''; render(); };
-window.clearFilters = ()=>{ S.filters={tipo:'todos',status:'todos',pessoaId:'',catId:'',cartaoId:'',contaId:''}; render(); };
-window.handleOvClick = (e)=>{ if(e.target.id==='ov'){ closeModal(); document.body.style.overflow=''; } };
-window.handleShClick = (e)=>{ if(e.target.id==='sh-ov'){ closeSheet(); document.body.style.overflow=''; } };
-
-window.toggleTheme = ()=>{
-  const t = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',t);
-  localStorage.setItem('theme',t);
-};
+// ─── GLOBAL FUNCTIONS ─────────────────────────────────────────────────────────
+window.setView=(v)=>{S.view=v;render();};
+window.setCadTab=(t)=>{S.cadTab=t;render();};
+window.setFilter=(k,v)=>{S.filters[k]=v;render();};
+window.removeFilter=(k)=>{S.filters[k]=k==='tipo'||k==='status'?'todos':'';render();};
+window.clearFilters=()=>{S.filters={tipo:'todos',status:'todos',pessoaId:'',catId:'',cartaoId:'',contaId:''};render();};
+window.handleOvClick=(e)=>{if(e.target.id==='ov'){closeModal();document.body.style.overflow='';}};
+window.handleShClick=(e)=>{if(e.target.id==='sh-ov'){closeSheet();document.body.style.overflow='';}};
+window.toggleTheme=()=>{const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',t);localStorage.setItem('theme',t);};
 
 function closePops(){
   document.getElementById('lpop').classList.remove('on');
   document.getElementById('mpop').classList.remove('on');
-  const _bg = document.getElementById('lpop-bg'); if(_bg) _bg.style.display='none';
+  const _bg=document.getElementById('lpop-bg');if(_bg)_bg.style.display='none';
   document.getElementById('pckr-mes').classList.remove('on');
   document.getElementById('pckr-ano').classList.remove('on');
-  // On mobile lpop acts as a sheet, unlock scroll when closed
-  if(window.innerWidth<=640) document.body.style.overflow='';
+  if(window.innerWidth<=640)document.body.style.overflow='';
 }
-window.closePops = closePops;
+window.closePops=closePops;
 
-window.toggleMenu = (e)=>{
-  e.stopPropagation();
-  closePops();
-  document.getElementById('mpop').classList.toggle('on');
+window.toggleMenu=(e)=>{e.stopPropagation();closePops();document.getElementById('mpop').classList.toggle('on');};
+
+window.openLaunchMenu=(e)=>{
+  e.stopPropagation();closePops();
+  const btn=document.getElementById('btn-lancar');
+  const rect=btn?btn.getBoundingClientRect():{bottom:60,left:16};
+  const pop=document.getElementById('lpop');
+  if(window.innerWidth>640){pop.style.top=(rect.bottom+6)+'px';pop.style.right=(window.innerWidth-rect.right)+'px';}
+  const isOn=!pop.classList.contains('on');pop.classList.toggle('on');
+  const bg=document.getElementById('lpop-bg');
+  if(bg){bg.style.display=isOn?'block':'none';if(window.innerWidth<=640)document.body.style.overflow=isOn?'hidden':'';}
 };
 
-window.openLaunchMenu = (e)=>{
-  e.stopPropagation();
-  closePops();
-  const btn = document.getElementById('btn-lancar');
-  const rect = btn ? btn.getBoundingClientRect() : {bottom:60,left:16};
-  const pop = document.getElementById('lpop');
-  if(window.innerWidth>640){
-    pop.style.top = (rect.bottom+6)+'px';
-    pop.style.right = (window.innerWidth-rect.right)+'px';
-  }
-  const isOn = !pop.classList.contains('on');
-  pop.classList.toggle('on');
-  const bg = document.getElementById('lpop-bg');
-  if(bg){
-    bg.style.display = isOn ? 'block' : 'none';
-    if(window.innerWidth<=640) document.body.style.overflow = isOn ? 'hidden' : '';
-  }
-};
-
-window.openPicker = (type, e)=>{
-  e.stopPropagation();
-  closePops();
-  const pid = 'pckr-'+type;
-  const p = document.getElementById(pid);
-  const btn = e.currentTarget;
-  const rect = btn.getBoundingClientRect();
-  p.style.top = (rect.bottom+4)+'px';
-  p.style.left = rect.left+'px';
-  if(type==='mes'){
-    p.innerHTML = MESES.map((m,i)=>`<div class="pckr-item ${S.mes===i?'act':''}" onclick="selectMes(${i})">${m}</div>`).join('');
-  } else {
-    const yrs = []; for(let y=2023;y<=2035;y++) yrs.push(y);
-    p.innerHTML = yrs.map(y=>`<div class="pckr-item ${S.ano===y?'act':''}" onclick="selectAno(${y})">${y}</div>`).join('');
-  }
+window.openPicker=(type,e)=>{
+  e.stopPropagation();closePops();
+  const pid='pckr-'+type;const p=document.getElementById(pid);const btn=e.currentTarget;const rect=btn.getBoundingClientRect();
+  p.style.top=(rect.bottom+4)+'px';p.style.left=rect.left+'px';
+  if(type==='mes'){p.innerHTML=MESES.map((m,i)=>`<div class="pckr-item ${S.mes===i?'act':''}" onclick="selectMes(${i})">${m}</div>`).join('');}
+  else{const yrs=[];for(let y=2023;y<=2035;y++)yrs.push(y);p.innerHTML=yrs.map(y=>`<div class="pckr-item ${S.ano===y?'act':''}" onclick="selectAno(${y})">${y}</div>`).join('');}
   p.classList.add('on');
 };
 
-window.selectMes = (m)=>{ S.mes=m; closePops(); render(); };
-window.selectAno = (y)=>{ S.ano=y; closePops(); render(); };
-
-document.addEventListener('click', ()=>closePops());
+window.selectMes=(m)=>{S.mes=m;closePops();render();};
+window.selectAno=(y)=>{S.ano=y;closePops();render();};
+document.addEventListener('click',()=>closePops());
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
-function openModal(title){
-  document.getElementById('m-title').textContent = title;
-  document.getElementById('ov').classList.add('on');
-  document.body.style.overflow='hidden';
-}
-function closeModal(){ document.getElementById('ov').classList.remove('on'); document.body.style.overflow=''; S.wiz=null; S.editItem=null; }
-window.closeModal = closeModal;
+function openModal(title){document.getElementById('m-title').textContent=title;document.getElementById('ov').classList.add('on');document.body.style.overflow='hidden';}
+function closeModal(){document.getElementById('ov').classList.remove('on');document.body.style.overflow='';S.wiz=null;S.editItem=null;}
+window.closeModal=closeModal;
 
 // ─── BOTTOM SHEET ─────────────────────────────────────────────────────────────
 function openSheet(id){
-  const t = S.data.trans.find(x=>x.id===id);
-  if(!t) return;
-  const st = getStatus(t);
-  const dr = dataRelevante(t);
-  const origem = t.cartaoId ? nome('cartoes',t.cartaoId) : t.contaId ? nome('contas',t.contaId) : t.formaPagamento||'—';
-  const parcela = t.totalParcelas ? `${t.parcelaAtual}/${t.totalParcelas}` : '';
-  const descBase = t.descricaoBase || t.descricao || '';
-
-  let actions = '';
-  if((st==='pendente'||st==='prestes'||st==='vencida')&&t.tipo==='despesa'){
-    actions+=`<button class="sh-act-btn" onclick="marcarPago('${id}');closeSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Marcar como paga</button>`;
-  }
-  if(st==='previsto'&&t.tipo==='receita'){
-    actions+=`<button class="sh-act-btn" onclick="confirmRecebimento('${id}');closeSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Confirmar recebimento</button>`;
-  }
+  const t=S.data.trans.find(x=>x.id===id);if(!t)return;
+  const st=getStatus(t);const dr=dataRelevante(t);
+  const origem=t.cartaoId?nome('cartoes',t.cartaoId):t.contaId?nome('contas',t.contaId):t.formaPagamento||'—';
+  const parcela=t.totalParcelas?`${t.parcelaAtual}/${t.totalParcelas}`:'';
+  const descBase=t.descricaoBase||t.descricao||'';
+  let actions='';
+  if((st==='pendente'||st==='prestes'||st==='vencida')&&t.tipo==='despesa') actions+=`<button class="sh-act-btn" onclick="marcarPago('${id}');closeSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Marcar como paga</button>`;
+  if(st==='previsto'&&t.tipo==='receita') actions+=`<button class="sh-act-btn" onclick="confirmRecebimento('${id}');closeSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Confirmar recebimento</button>`;
   actions+=`<button class="sh-act-btn" onclick="editItem('${id}');closeSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar</button>`;
   actions+=`<button class="sh-act-btn danger" onclick="confirmDelete('${id}');closeSheet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg>Excluir</button>`;
-
-  document.getElementById('sh-content').innerHTML = `
-    <div class="sh-title">${descBase}${parcela?` <span style="font-size:14px;color:var(--txt3)">${parcela}</span>`:''}</div>
-    <div class="sh-sub">${t.tipo==='receita'?'↓ Receita':'↑ Despesa'}</div>
-    <div class="sh-detail-row"><span class="sh-detail-lbl">Valor</span><span class="sh-detail-val ${t.tipo==='receita'?'text-green':''}">${fmt(t.valor)}</span></div>
-    <div class="sh-detail-row"><span class="sh-detail-lbl">Data</span><span class="sh-detail-val">${dr?fmtDate(dr):'—'}</span></div>
-    ${t.pessoaId?`<div class="sh-detail-row"><span class="sh-detail-lbl">Pessoa</span><span class="sh-detail-val">${nome('pessoas',t.pessoaId)}</span></div>`:''}
-    ${t.catId?`<div class="sh-detail-row"><span class="sh-detail-lbl">Categoria</span><span class="sh-detail-val">${nome('cats',t.catId)}</span></div>`:''}
-    <div class="sh-detail-row"><span class="sh-detail-lbl">Origem</span><span class="sh-detail-val">${origem}</span></div>
-    <div class="sh-detail-row"><span class="sh-detail-lbl">Status</span><span class="sh-detail-val">${badgeHtmlFull(t)}</span></div>
-    <div class="sh-actions">${actions}</div>`;
-
-  document.getElementById('sh-ov').classList.add('on');
-  document.body.style.overflow='hidden';
+  document.getElementById('sh-content').innerHTML=`<div class="sh-title">${descBase}${parcela?` <span style="font-size:14px;color:var(--txt3)">${parcela}</span>`:''}</div><div class="sh-sub">${t.tipo==='receita'?'↓ Receita':'↑ Despesa'}</div><div class="sh-detail-row"><span class="sh-detail-lbl">Valor</span><span class="sh-detail-val">${fmt(t.valor)}</span></div><div class="sh-detail-row"><span class="sh-detail-lbl">Data</span><span class="sh-detail-val">${dr?fmtDate(dr):'—'}</span></div>${t.pessoaId?`<div class="sh-detail-row"><span class="sh-detail-lbl">Pessoa</span><span class="sh-detail-val">${nome('pessoas',t.pessoaId)}</span></div>`:''}${t.catId?`<div class="sh-detail-row"><span class="sh-detail-lbl">Categoria</span><span class="sh-detail-val">${nome('cats',t.catId)}</span></div>`:''}<div class="sh-detail-row"><span class="sh-detail-lbl">Origem</span><span class="sh-detail-val">${origem}</span></div><div class="sh-detail-row"><span class="sh-detail-lbl">Status</span><span class="sh-detail-val">${badgeHtmlFull(t)}</span></div><div class="sh-actions">${actions}</div>`;
+  document.getElementById('sh-ov').classList.add('on');document.body.style.overflow='hidden';
 }
-window.openSheet = openSheet;
-
-function closeSheet(){ document.getElementById('sh-ov').classList.remove('on'); document.body.style.overflow=''; }
-window.closeSheet = closeSheet;
+window.openSheet=openSheet;
+function closeSheet(){document.getElementById('sh-ov').classList.remove('on');document.body.style.overflow='';}
+window.closeSheet=closeSheet;
 
 // ─── ACTIONS ─────────────────────────────────────────────────────────────────
-window.marcarPago = async(id)=>{
-  await updateItem(id, {status:'pago', pagamentoData: new Date()});
-  render();
-};
-
-window.confirmRecebimento = async(id)=>{
-  const t = S.data.trans.find(x=>x.id===id);
-  if(!t) return;
-  if(t.valorVariavel){
-    // Ask for real value
-    openConfirmRecvModal(t);
-  } else {
-    await updateItem(id, {status:'recebido', pagamentoData: new Date()});
-    render();
-  }
-};
+window.marcarPago=async(id)=>{await updateItem(id,{status:'pago',pagamentoData:new Date()});render();};
+window.confirmRecebimento=async(id)=>{const t=S.data.trans.find(x=>x.id===id);if(!t)return;if(t.valorVariavel){openConfirmRecvModal(t);}else{await updateItem(id,{status:'recebido',pagamentoData:new Date()});render();}};
 
 function openConfirmRecvModal(t){
   openModal('Confirmar recebimento');
-  document.getElementById('m-body').innerHTML = `
-    <div class="fld"><label>Valor previsto: ${fmt(t.valor)}</label></div>
-    <div class="fld">
-      <p class="wiz-q" style="font-size:14px;margin-bottom:8px">O valor recebido foi diferente?</p>
-      <div class="bin-grp">
-        <button class="bin-btn" id="val-nao" onclick="confirmRecvSim(false,'${t.id}')">Não, foi igual</button>
-        <button class="bin-btn" id="val-sim" onclick="confirmRecvSim(true,'${t.id}')">Sim, foi diferente</button>
-      </div>
-    </div>
-    <div id="val-diff-wrap" style="display:none">
-      <div class="fld">
-        <label>Valor recebido</label>
-        <input type="number" id="val-real" step="0.01" placeholder="0,00">
-      </div>
-    </div>`;
-  document.getElementById('m-foot').innerHTML = `<button class="btn btn-p btn-full" onclick="finalizarRecebimento('${t.id}')">Confirmar</button>`;
+  document.getElementById('m-body').innerHTML=`<div class="fld"><label>Valor previsto: ${fmt(t.valor)}</label></div><div class="fld"><p class="wiz-q" style="font-size:14px;margin-bottom:8px">O valor recebido foi diferente?</p><div class="bin-grp"><button class="bin-btn" id="val-nao" onclick="confirmRecvSim(false,'${t.id}')">Não, foi igual</button><button class="bin-btn" id="val-sim" onclick="confirmRecvSim(true,'${t.id}')">Sim, foi diferente</button></div></div><div id="val-diff-wrap" style="display:none"><div class="fld"><label>Valor recebido</label><input type="number" id="val-real" step="0.01" placeholder="0,00"></div></div>`;
+  document.getElementById('m-foot').innerHTML=`<button class="btn btn-p btn-full" onclick="finalizarRecebimento('${t.id}')">Confirmar</button>`;
 }
-window.confirmRecvSim = (diff, id)=>{
-  document.getElementById('val-diff-wrap').style.display = diff?'block':'none';
-  document.getElementById('val-sim').classList.toggle('sel',diff);
-  document.getElementById('val-nao').classList.toggle('sel',!diff);
-};
-window.finalizarRecebimento = async(id)=>{
-  const valReal = document.getElementById('val-real');
-  const upd = {status:'recebido', pagamentoData: new Date()};
-  if(valReal && document.getElementById('val-diff-wrap').style.display!=='none'){
-    upd.valor = parseFloat(valReal.value)||S.data.trans.find(x=>x.id===id)?.valor;
-  }
-  await updateItem(id, upd);
-  closeModal(); render();
-};
+window.confirmRecvSim=(diff,id)=>{document.getElementById('val-diff-wrap').style.display=diff?'block':'none';document.getElementById('val-sim').classList.toggle('sel',diff);document.getElementById('val-nao').classList.toggle('sel',!diff);};
+window.finalizarRecebimento=async(id)=>{const valReal=document.getElementById('val-real');const upd={status:'recebido',pagamentoData:new Date()};if(valReal&&document.getElementById('val-diff-wrap').style.display!=='none'){upd.valor=parseFloat(valReal.value)||S.data.trans.find(x=>x.id===id)?.valor;}await updateItem(id,upd);closeModal();render();};
 
-window.confirmDelete = (id)=>{
-  const t = S.data.trans.find(x=>x.id===id);
-  if(!t) return;
-  if(t.recorrenciaId){
-    openDeleteRecorrencia(id, t);
-  } else {
-    if(confirm('Excluir este lançamento?')) deleteItemAndRender(id);
-  }
-};
+window.confirmDelete=(id)=>{const t=S.data.trans.find(x=>x.id===id);if(!t)return;if(t.recorrenciaId){openDeleteRecorrencia(id,t);}else{if(confirm('Excluir este lançamento?'))deleteItemAndRender(id);}};
+function openDeleteRecorrencia(id,t){openModal('Excluir lançamento');document.getElementById('m-body').innerHTML=`<p style="font-size:14px;color:var(--txt2);margin-bottom:14px">Este lançamento faz parte de uma série recorrente. O que deseja excluir?</p><div class="choices"><div class="ch-card" onclick="deleteOnlyThis('${id}')"><div><div class="ch-label">Só este</div><div class="ch-sub">Exclui apenas este lançamento</div></div></div><div class="ch-card" onclick="deleteThisAndNext('${id}','${t.recorrenciaId}')"><div><div class="ch-label">Este e os próximos</div><div class="ch-sub">Exclui este e todos os futuros da série</div></div></div></div>`;document.getElementById('m-foot').innerHTML=`<button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;}
+window.deleteOnlyThis=async(id)=>{await deleteItem(id);closeModal();render();};
+window.deleteThisAndNext=async(id,recId)=>{const t=S.data.trans.find(x=>x.id===id);const fromDate=t?(dataRelevante(t)||tsToDate(t.dataRelevante)):null;await deleteItemsWithRecorrenciaId(recId,fromDate);closeModal();render();};
+async function deleteItemAndRender(id){await deleteItem(id);render();}
 
-function openDeleteRecorrencia(id, t){
-  openModal('Excluir lançamento');
-  document.getElementById('m-body').innerHTML = `
-    <p style="font-size:14px;color:var(--txt2);margin-bottom:14px">Este lançamento faz parte de uma série recorrente. O que deseja excluir?</p>
-    <div class="choices">
-      <div class="ch-card" onclick="deleteOnlyThis('${id}')">
-        <div><div class="ch-label">Só este</div><div class="ch-sub">Exclui apenas este lançamento</div></div>
-      </div>
-      <div class="ch-card" onclick="deleteThisAndNext('${id}','${t.recorrenciaId}')">
-        <div><div class="ch-label">Este e os próximos</div><div class="ch-sub">Exclui este e todos os futuros da série</div></div>
-      </div>
-    </div>`;
-  document.getElementById('m-foot').innerHTML = `<button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;
-}
-window.deleteOnlyThis = async(id)=>{ await deleteItem(id); closeModal(); render(); };
-window.deleteThisAndNext = async(id, recId)=>{
-  const t = S.data.trans.find(x=>x.id===id);
-  const fromDate = t ? (dataRelevante(t)||tsToDate(t.dataRelevante)) : null;
-  await deleteItemsWithRecorrenciaId(recId, fromDate);
-  closeModal(); render();
-};
-async function deleteItemAndRender(id){ await deleteItem(id); render(); }
+window.editItem=(id)=>{const t=S.data.trans.find(x=>x.id===id);if(!t)return;if(t.recorrenciaId){openEditRecorrencia(id,t);}else{openEditForm(id,t);}};
+function openEditRecorrencia(id,t){openModal('Editar lançamento');document.getElementById('m-body').innerHTML=`<p style="font-size:14px;color:var(--txt2);margin-bottom:14px">Deseja alterar só este lançamento ou este e os próximos?</p><div class="choices"><div class="ch-card" onclick="editOnlyThis('${id}')"><div><div class="ch-label">Só este</div><div class="ch-sub">Altera apenas este lançamento</div></div></div><div class="ch-card" onclick="editThisAndNext('${id}','${t.recorrenciaId}')"><div><div class="ch-label">Este e os próximos</div><div class="ch-sub">Altera este e todos os futuros da série</div></div></div></div>`;document.getElementById('m-foot').innerHTML=`<button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;}
+window.editOnlyThis=(id)=>{closeModal();S.editItem={id,scope:'single'};openEditForm(id,S.data.trans.find(x=>x.id===id));};
+window.editThisAndNext=(id,recId)=>{closeModal();S.editItem={id,recId,scope:'future'};openEditForm(id,S.data.trans.find(x=>x.id===id));};
 
-window.editItem = (id)=>{
-  const t = S.data.trans.find(x=>x.id===id);
-  if(!t) return;
-  if(t.recorrenciaId){
-    openEditRecorrencia(id, t);
-  } else {
-    openEditForm(id, t);
-  }
-};
-
-function openEditRecorrencia(id, t){
+function openEditForm(id,t){
+  S.editItem=S.editItem||{id,scope:'single'};
   openModal('Editar lançamento');
-  document.getElementById('m-body').innerHTML = `
-    <p style="font-size:14px;color:var(--txt2);margin-bottom:14px">Deseja alterar só este lançamento ou este e os próximos?</p>
-    <div class="choices">
-      <div class="ch-card" onclick="editOnlyThis('${id}')">
-        <div><div class="ch-label">Só este</div><div class="ch-sub">Altera apenas este lançamento</div></div>
-      </div>
-      <div class="ch-card" onclick="editThisAndNext('${id}','${t.recorrenciaId}')">
-        <div><div class="ch-label">Este e os próximos</div><div class="ch-sub">Altera este e todos os futuros da série</div></div>
-      </div>
-    </div>`;
-  document.getElementById('m-foot').innerHTML = `<button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;
+  const pessoaOpts=S.data.pessoas.filter(p=>p.status!=='inativo').map(p=>`<option value="${p.id}" ${t.pessoaId===p.id?'selected':''}>${p.nome}</option>`).join('');
+  const catOpts2=S.data.cats.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${t.catId===c.id?'selected':''}>${c.nome}</option>`).join('');
+  const dr=dataRelevante(t);
+  const dateStr=dr?`${dr.getFullYear()}-${String(dr.getMonth()+1).padStart(2,'0')}-${String(dr.getDate()).padStart(2,'0')}`:'';
+  document.getElementById('m-body').innerHTML=`<div class="fld"><label>Descrição</label><input id="e-desc" value="${t.descricao||''}"></div><div class="fld"><label>Valor (R$)</label><input id="e-val" type="number" step="0.01" value="${t.valor||''}"></div><div class="fld"><label>Data</label><input id="e-date" type="date" value="${dateStr}"></div>${S.data.pessoas.length?`<div class="fld"><label>Pessoa</label><select id="e-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${S.data.cats.length?`<div class="fld"><label>Categoria</label><select id="e-cat"><option value="">—</option>${catOpts2}</select></div>`:''}`;
+  document.getElementById('m-foot').innerHTML=`<button class="btn btn-p btn-full" onclick="saveEditForm('${id}')">Salvar alterações</button><button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;
 }
-window.editOnlyThis = (id)=>{ closeModal(); S.editItem={id,scope:'single'}; openEditForm(id, S.data.trans.find(x=>x.id===id)); };
-window.editThisAndNext = (id,recId)=>{ closeModal(); S.editItem={id,recId,scope:'future'}; openEditForm(id, S.data.trans.find(x=>x.id===id)); };
-
-function openEditForm(id, t){
-  S.editItem = S.editItem||{id,scope:'single'};
-  openModal('Editar lançamento');
-  const pessoaOpts = S.data.pessoas.filter(p=>p.status!=='inativo').map(p=>`<option value="${p.id}" ${t.pessoaId===p.id?'selected':''}>${p.nome}</option>`).join('');
-  const catOpts2 = S.data.cats.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${t.catId===c.id?'selected':''}>${c.nome}</option>`).join('');
-  const dr = dataRelevante(t);
-  const dateStr = dr ? `${dr.getFullYear()}-${String(dr.getMonth()+1).padStart(2,'0')}-${String(dr.getDate()).padStart(2,'0')}` : '';
-
-  document.getElementById('m-body').innerHTML = `
-    <div class="fld"><label>Descrição</label><input id="e-desc" value="${t.descricao||''}"></div>
-    <div class="fld"><label>Valor (R$)</label><input id="e-val" type="number" step="0.01" value="${t.valor||''}"></div>
-    <div class="fld"><label>Data</label><input id="e-date" type="date" value="${dateStr}"></div>
-    ${S.data.pessoas.length?`<div class="fld"><label>Pessoa</label><select id="e-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}
-    ${S.data.cats.length?`<div class="fld"><label>Categoria</label><select id="e-cat"><option value="">—</option>${catOpts2}</select></div>`:''}
-    `;
-  document.getElementById('m-foot').innerHTML = `
-    <button class="btn btn-p btn-full" onclick="saveEditForm('${id}')">Salvar alterações</button>
-    <button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;
-}
-
-window.saveEditForm = async(id)=>{
-  const desc = document.getElementById('e-desc')?.value||'';
-  const val = parseFloat(document.getElementById('e-val')?.value)||0;
-  const dt = document.getElementById('e-date')?.value;
-  const pessoaId = document.getElementById('e-pessoa')?.value||'';
-  const catId = document.getElementById('e-cat')?.value||'';
-  const d = dt ? new Date(dt+'T12:00:00') : null;
-  const upd = {descricao:desc,valor:val,pessoaId,catId};
-  if(d){ upd.dataRelevante=d; if(S.data.trans.find(x=>x.id===id)?.tipo==='despesa') upd.vencimento=d; }
-  const ei = S.editItem;
-  if(ei&&ei.scope==='future'&&ei.recId){
-    const t = S.data.trans.find(x=>x.id===id);
-    const fromDate = t ? (dataRelevante(t)||tsToDate(t.dataRelevante)) : null;
-    await updateItemsWithRecorrenciaId(ei.recId, fromDate, upd);
-  } else {
-    await updateItem(id, upd);
-  }
-  S.editItem=null; closeModal(); render();
+window.saveEditForm=async(id)=>{
+  const desc=document.getElementById('e-desc')?.value||'';const val=parseFloat(document.getElementById('e-val')?.value)||0;const dt=document.getElementById('e-date')?.value;const pessoaId=document.getElementById('e-pessoa')?.value||'';const catId=document.getElementById('e-cat')?.value||'';const d=dt?new Date(dt+'T12:00:00'):null;const upd={descricao:desc,valor:val,pessoaId,catId};if(d){upd.dataRelevante=d;if(S.data.trans.find(x=>x.id===id)?.tipo==='despesa')upd.vencimento=d;}
+  const ei=S.editItem;if(ei&&ei.scope==='future'&&ei.recId){const t=S.data.trans.find(x=>x.id===id);const fromDate=t?(dataRelevante(t)||tsToDate(t.dataRelevante)):null;await updateItemsWithRecorrenciaId(ei.recId,fromDate,upd);}else{await updateItem(id,upd);}
+  S.editItem=null;closeModal();render();
 };
 
-// ─── MOBILE FILTERS SHEET ─────────────────────────────────────────────────────
-window.openMobileFilters = ()=>{
-  const f = S.filters;
-  const pessoaOpts = S.data.pessoas.filter(p=>p.status!=='inativo').map(p=>`<option value="${p.id}" ${f.pessoaId===p.id?'selected':''}>${p.nome}</option>`).join('');
-  const catOpts2 = S.data.cats.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.catId===c.id?'selected':''}>${c.nome}</option>`).join('');
-  const cartaoOpts2 = S.data.cartoes.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.cartaoId===c.id?'selected':''}>${c.nome}</option>`).join('');
-  const contaOpts2 = S.data.contas.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.contaId===c.id?'selected':''}>${c.nome}</option>`).join('');
-  document.getElementById('sh-content').innerHTML = `
-    <div class="sh-title">Mais filtros</div>
-    <div class="sh-sub">Filtre por pessoa, categoria, cartão ou conta</div>
-    ${S.data.pessoas.length?`<div class="fld"><label>Pessoa</label><select class="fld select" onchange="setFilter('pessoaId',this.value)"><option value="">Todas as pessoas</option>${pessoaOpts}</select></div>`:''}
-    ${S.data.cats.length?`<div class="fld"><label>Categoria</label><select onchange="setFilter('catId',this.value)"><option value="">Todas as categorias</option>${catOpts2}</select></div>`:''}
-    ${S.data.cartoes.length?`<div class="fld"><label>Cartão</label><select onchange="setFilter('cartaoId',this.value)"><option value="">Todos os cartões</option>${cartaoOpts2}</select></div>`:''}
-    ${S.data.contas.length?`<div class="fld"><label>Conta</label><select onchange="setFilter('contaId',this.value)"><option value="">Todas as contas</option>${contaOpts2}</select></div>`:''}
-    <button class="btn btn-p btn-full" style="margin-top:8px" onclick="closeSheet();render()">Aplicar</button>`;
-  document.getElementById('sh-ov').classList.add('on');
-  document.body.style.overflow='hidden';
+window.openMobileFilters=()=>{
+  const f=S.filters;
+  const pessoaOpts=S.data.pessoas.filter(p=>p.status!=='inativo').map(p=>`<option value="${p.id}" ${f.pessoaId===p.id?'selected':''}>${p.nome}</option>`).join('');
+  const catOpts2=S.data.cats.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.catId===c.id?'selected':''}>${c.nome}</option>`).join('');
+  const cartaoOpts2=S.data.cartoes.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.cartaoId===c.id?'selected':''}>${c.nome}</option>`).join('');
+  const contaOpts2=S.data.contas.filter(c=>c.status!=='inativo').map(c=>`<option value="${c.id}" ${f.contaId===c.id?'selected':''}>${c.nome}</option>`).join('');
+  document.getElementById('sh-content').innerHTML=`<div class="sh-title">Mais filtros</div><div class="sh-sub">Filtre por pessoa, categoria, cartão ou conta</div>${S.data.pessoas.length?`<div class="fld"><label>Pessoa</label><select onchange="setFilter('pessoaId',this.value)"><option value="">Todas as pessoas</option>${pessoaOpts}</select></div>`:''}${S.data.cats.length?`<div class="fld"><label>Categoria</label><select onchange="setFilter('catId',this.value)"><option value="">Todas as categorias</option>${catOpts2}</select></div>`:''}${S.data.cartoes.length?`<div class="fld"><label>Cartão</label><select onchange="setFilter('cartaoId',this.value)"><option value="">Todos os cartões</option>${cartaoOpts2}</select></div>`:''}${S.data.contas.length?`<div class="fld"><label>Conta</label><select onchange="setFilter('contaId',this.value)"><option value="">Todas as contas</option>${contaOpts2}</select></div>`:''}<button class="btn btn-p btn-full" style="margin-top:8px" onclick="closeSheet();render()">Aplicar</button>`;
+  document.getElementById('sh-ov').classList.add('on');document.body.style.overflow='hidden';
 };
 
 // ─── WIZARD ───────────────────────────────────────────────────────────────────
-window.openWizard = (tipo)=>{
-  closePops();
-  S.wiz = { tipo, screen:'start', data:{} };
-  openModal(tipo==='despesa'?'Nova despesa':'Nova receita');
-  renderWizard();
-};
+window.openWizard=(tipo)=>{closePops();S.wiz={tipo,screen:'start',data:{}};openModal(tipo==='despesa'?'Nova despesa':'Nova receita');renderWizard();};
+function renderWizard(){const w=S.wiz;const body=document.getElementById('m-body');const foot=document.getElementById('m-foot');body.innerHTML='';foot.innerHTML='';if(w.tipo==='despesa')renderDespesaWizard(w,body,foot);else renderReceitaWizard(w,body,foot);}
+window.renderWizard=renderWizard;
 
-function renderWizard(){
-  const w = S.wiz;
-  const body = document.getElementById('m-body');
-  const foot = document.getElementById('m-foot');
-  body.innerHTML = ''; foot.innerHTML = '';
-
-  if(w.tipo==='despesa') renderDespesaWizard(w, body, foot);
-  else renderReceitaWizard(w, body, foot);
-}
-window.renderWizard = renderWizard;
-
-function renderDespesaWizard(w, body, foot){
-  const d = w.data;
-
-  if(w.screen==='start'){
-    body.innerHTML = `
-      <p class="wiz-q">Como essa despesa acontece?</p>
-      <div class="choices">
-        <div class="ch-card" onclick="wizDespesaSubtipo('avulsa')">
-          <span class="ch-icon">⚡</span>
-          <div><div class="ch-label">PIX, Débito ou Dinheiro</div><div class="ch-sub">Paguei agora — dinheiro já saiu da conta</div></div>
-        </div>
-        <div class="ch-card" onclick="wizDespesaSubtipo('cartao')">
-          <span class="ch-icon">💳</span>
-          <div><div class="ch-label">Cartão de crédito</div><div class="ch-sub">À vista, parcelada ou recorrente</div></div>
-        </div>
-        <div class="ch-card" onclick="wizDespesaSubtipo('recorrente')">
-          <span class="ch-icon">🔄</span>
-          <div><div class="ch-label">Todo mês (sem cartão de crédito)</div><div class="ch-sub">Água, luz, clube, escola, judo — boleto ou débito automático</div></div>
-        </div>
-      </div>`;
-    return;
-  }
-
-  if(w.screen==='avulsa'){
-    const hoje = todayStr();
-    const formaOpts = ['Dinheiro','PIX','Débito','Crédito','Boleto','Outro'].map(f=>`<option ${d.forma===f?'selected':''}>${f}</option>`).join('');
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'despesa');
-    body.innerHTML = `
-      <div class="step-back" onclick="wizBack()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Supermercado, farmácia..." value="${d.descricao||''}"></div>
-      <div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div>
-      <div class="fld"><label>Quando você fez essa compra?</label><input id="w-date" type="date" value="${d.data||hoje}"></div>
-      <div class="fld"><label>Forma de pagamento</label><select id="w-forma"><option value="">—</option>${formaOpts}</select></div>
-      <div id="venc-wrap" style="display:${d.pago===true?'none':'block'}">
-        <div class="fld"><label>Vence em</label><input id="w-venc" type="date" value="${d.vencimento||d.data||hoje}"></div>
-      </div>
-      <div class="fld">
-        <label>Situação</label>
-        <div class="bin-grp">
-          <button type="button" class="bin-btn ${d.pago===true?'sel':''}" id="pago-s" onclick="wizSetPago(true)">Já paguei</button>
-          <button type="button" class="bin-btn ${d.pago===false?'sel':''}" id="pago-n" onclick="wizSetPago(false)">Ainda vou pagar</button>
-        </div>
-      </div>
-      ${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}
-      ${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}`;
-    foot.innerHTML = `<button class="btn btn-p btn-full" onclick="salvarAvulsa()">Salvar despesa</button>`;
-    return;
-  }
-
-  if(w.screen==='cartao-sel'){
-    if(S.data.cartoes.filter(c=>c.status!=='inativo').length===0){
-      body.innerHTML = `
-        <div class="empty"><div class="empty-emoji">💳</div>
-        <div class="empty-t">Você ainda não cadastrou nenhum cartão</div>
-        <div class="empty-s">Cadastre um cartão para lançar despesas nele</div>
-        <button class="btn btn-p" onclick="closeModal();setCadTab('cartoes');setView('cadastros')">Cadastrar cartão</button></div>`;
-      return;
-    }
-    body.innerHTML = `
-      <div class="step-back" onclick="wizBack()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <p class="wiz-q">Qual cartão?</p>
-      <div class="choices">
-        ${S.data.cartoes.filter(c=>c.status!=='inativo').map(c=>`
-          <div class="ch-card ${d.cartaoId===c.id?'sel':''}" onclick="wizSelectCartao('${c.id}')">
-            <span class="ch-icon">💳</span>
-            <div><div class="ch-label">${c.nome}</div><div class="ch-sub">Fecha dia ${c.diaFechamento} · Vence dia ${c.diaVencimento}</div></div>
-          </div>`).join('')}
-      </div>`;
-    return;
-  }
-
-  if(w.screen==='cartao-tipo'){
-    body.innerHTML = `
-      <div class="step-back" onclick="wizGoTo('cartao-sel')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <p class="wiz-q">Como é essa despesa no cartão de crédito?</p>
-      <div class="choices">
-        <div class="ch-card" onclick="wizGoTo('cartao-avista')">
-          <span class="ch-icon">⚡</span>
-          <div><div class="ch-label">À vista</div><div class="ch-sub">Pago de uma vez na fatura</div></div>
-        </div>
-        <div class="ch-card" onclick="wizGoTo('cartao-parcelado')">
-          <span class="ch-icon">📆</span>
-          <div><div class="ch-label">Parcelada</div><div class="ch-sub">Dividida em várias faturas</div></div>
-        </div>
-        <div class="ch-card" onclick="wizGoTo('cartao-recorrente')">
-          <span class="ch-icon">🔄</span>
-          <div><div class="ch-label">Recorrente</div><div class="ch-sub">Netflix, iCloud, Spotify, assinaturas...</div></div>
-        </div>
-      </div>`;
-    return;
-  }
-
-  if(w.screen==='cartao-avista'){
-    const c = getCartao(d.cartaoId);
-    const hoje = todayStr();
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'despesa');
-    body.innerHTML = `
-      <div class="step-back" onclick="wizGoTo('cartao-tipo')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Restaurante, loja..." value="${d.descricao||''}"></div>
-      <div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div>
-      <div class="fld"><label>Data da compra</label><input id="w-date" type="date" value="${d.data||hoje}" oninput="atualizarPreviewFatura(this.value)"></div>
-      ${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}
-      ${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}
-      <div id="fatura-preview">${d.data?previewFatura(d.data,c):''}</div>`;
-    foot.innerHTML = `<button class="btn btn-p btn-full" onclick="salvarCartaoAvista()">Salvar</button>`;
-    return;
-  }
-
-  if(w.screen==='cartao-parcelado'){
-    const c = getCartao(d.cartaoId);
-    const hoje = todayStr();
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'despesa');
-    body.innerHTML = `
-      <div class="step-back" onclick="wizGoTo('cartao-tipo')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Geladeira, TV..." value="${d.descricao||''}"></div>
-      <div class="fld"><label>Valor total (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}" oninput="atualizarPreviewParc()"></div>
-      <div class="fld"><label>Nº de parcelas</label><input id="w-parc" type="number" min="2" max="60" placeholder="Ex: 10" value="${d.parcelas||''}" oninput="atualizarPreviewParc()"></div>
-      <div class="fld"><label>Data da compra</label><input id="w-date" type="date" value="${d.data||hoje}" oninput="atualizarPreviewParc()"></div>
-      ${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}
-      ${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}
-      <div id="parc-preview"></div>`;
-    foot.innerHTML = `<button class="btn btn-p btn-full" onclick="salvarParcelado()">Salvar parcelamento</button>`;
-    return;
-  }
-
-  if(w.screen==='cartao-recorrente'){
-    const hoje = todayStr();
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'despesa');
-    body.innerHTML = `
-      <div class="step-back" onclick="wizGoTo('cartao-tipo')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Netflix, iCloud, Spotify..." value="${d.descricao||''}"></div>
-      <div class="fld"><label>Valor mensal (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div>
-      <div class="fld"><label>Primeira cobrança</label><input id="w-date" type="date" value="${d.data||hoje}"></div>
-      ${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}
-      ${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}
-      <div class="fld">
-        <p class="wiz-q" style="font-size:14px;margin-bottom:8px">Tem fim?</p>
-        <div class="bin-grp">
-          <button type="button" class="bin-btn ${d.temFim===false?'sel':''}" data-fim-btn="nao" onclick="wizSetTemFim(false)">Não</button>
-          <button type="button" class="bin-btn ${d.temFim===true?'sel':''}" data-fim-btn="sim" onclick="wizSetTemFim(true)">Sim</button>
-        </div>
-      </div>
-      <div id="fim-wrap" style="display:${d.temFim?'block':'none'}">
-        <div class="fld"><label>Até quando? (meses)</label><input id="w-meses" type="number" min="1" max="120" placeholder="Ex: 12" value="${d.meses||''}"></div>
-      </div>`;
-    foot.innerHTML = `<button class="btn btn-p btn-full" onclick="salvarCartaoRecorrente()">Salvar recorrência</button>`;
-    return;
-  }
-
-  if(w.screen==='recorrente'){
-    const hoje = todayStr();
-    const formaOpts = ['Boleto','PIX','Débito automático','Outro'].map(f=>`<option ${d.forma===f?'selected':''}>${f}</option>`).join('');
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'despesa');
-    body.innerHTML = `
-      <div class="step-back" onclick="wizBack()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Água, luz, AABB..." value="${d.descricao||''}"></div>
-      <div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div>
-      <div class="fld"><label>Forma de pagamento</label><select id="w-forma"><option value="">—</option>${formaOpts}</select></div>
-      <div class="fld"><label>Primeiro vencimento</label><input id="w-date" type="date" value="${d.data||hoje}"></div>
-      ${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}
-      ${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}
-      <div class="fld">
-        <p class="wiz-q" style="font-size:14px;margin-bottom:8px">Tem fim?</p>
-        <div class="bin-grp">
-          <button type="button" class="bin-btn ${d.temFim===false?'sel':''}" data-fim-btn="nao" onclick="wizSetTemFim(false)">Não</button>
-          <button type="button" class="bin-btn ${d.temFim===true?'sel':''}" data-fim-btn="sim" onclick="wizSetTemFim(true)">Sim</button>
-        </div>
-      </div>
-      <div id="fim-wrap" style="display:${d.temFim?'block':'none'}">
-        <div class="fld"><label>Duração (meses)</label><input id="w-meses" type="number" min="1" max="120" placeholder="Ex: 12" value="${d.meses||''}"></div>
-      </div>
-      <div class="fld">
-        <p class="wiz-q" style="font-size:14px;margin-bottom:8px">Quer ver isso andando mês a mês?</p>
-        <div class="bin-grp">
-          <button type="button" class="bin-btn ${d.progresso===false?'sel':''}" id="prog-n" onclick="wizSetProgresso(false)">Não</button>
-          <button type="button" class="bin-btn ${d.progresso===true?'sel':''}" id="prog-s" onclick="wizSetProgresso(true)">Sim</button>
-        </div>
-      </div>`;
-    foot.innerHTML = `<button class="btn btn-p btn-full" onclick="salvarRecorrente()">Salvar recorrência</button>`;
-    return;
-  }
+function renderDespesaWizard(w,body,foot){
+  const d=w.data;
+  if(w.screen==='start'){body.innerHTML=`<p class="wiz-q">Como essa despesa acontece?</p><div class="choices"><div class="ch-card" onclick="wizDespesaSubtipo('avulsa')"><span class="ch-icon">⚡</span><div><div class="ch-label">PIX, Débito ou Dinheiro</div><div class="ch-sub">Paguei agora — dinheiro já saiu da conta</div></div></div><div class="ch-card" onclick="wizDespesaSubtipo('cartao')"><span class="ch-icon">💳</span><div><div class="ch-label">Cartão de crédito</div><div class="ch-sub">À vista, parcelada ou recorrente</div></div></div><div class="ch-card" onclick="wizDespesaSubtipo('recorrente')"><span class="ch-icon">🔄</span><div><div class="ch-label">Todo mês (sem cartão de crédito)</div><div class="ch-sub">Água, luz, clube, escola — boleto ou débito automático</div></div></div></div>`;return;}
+  if(w.screen==='avulsa'){const hoje=todayStr();const formaOpts=['Dinheiro','PIX','Débito','Crédito','Boleto','Outro'].map(f=>`<option ${d.forma===f?'selected':''}>${f}</option>`).join('');const pessoaOpts=pessoasSelect(d.pessoaId);const catOpts2=catsSelect(d.catId,'despesa');body.innerHTML=`<div class="step-back" onclick="wizBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Supermercado..." value="${d.descricao||''}"></div><div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div><div class="fld"><label>Quando você fez essa compra?</label><input id="w-date" type="date" value="${d.data||hoje}"></div><div class="fld"><label>Forma de pagamento</label><select id="w-forma"><option value="">—</option>${formaOpts}</select></div><div id="venc-wrap" style="display:${d.pago===true?'none':'block'}"><div class="fld"><label>Vence em</label><input id="w-venc" type="date" value="${d.vencimento||d.data||hoje}"></div></div><div class="fld"><label>Situação</label><div class="bin-grp"><button type="button" class="bin-btn ${d.pago===true?'sel':''}" id="pago-s" onclick="wizSetPago(true)">Já paguei</button><button type="button" class="bin-btn ${d.pago===false?'sel':''}" id="pago-n" onclick="wizSetPago(false)">Ainda vou pagar</button></div></div>${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}`;foot.innerHTML=`<button class="btn btn-p btn-full" onclick="salvarAvulsa()">Salvar despesa</button>`;return;}
+  if(w.screen==='cartao-sel'){if(S.data.cartoes.filter(c=>c.status!=='inativo').length===0){body.innerHTML=`<div class="empty"><div class="empty-emoji">💳</div><div class="empty-t">Nenhum cartão cadastrado</div><div class="empty-s">Cadastre um cartão primeiro</div><button class="btn btn-p" onclick="closeModal();setCadTab('cartoes');setView('cadastros')">Cadastrar cartão</button></div>`;return;}body.innerHTML=`<div class="step-back" onclick="wizBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><p class="wiz-q">Qual cartão?</p><div class="choices">${S.data.cartoes.filter(c=>c.status!=='inativo').map(c=>`<div class="ch-card ${d.cartaoId===c.id?'sel':''}" onclick="wizSelectCartao('${c.id}')"><span class="ch-icon">💳</span><div><div class="ch-label">${c.nome}</div><div class="ch-sub">Fecha dia ${c.diaFechamento} · Vence dia ${c.diaVencimento}</div></div></div>`).join('')}</div>`;return;}
+  if(w.screen==='cartao-tipo'){body.innerHTML=`<div class="step-back" onclick="wizGoTo('cartao-sel')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><p class="wiz-q">Como é essa despesa no cartão?</p><div class="choices"><div class="ch-card" onclick="wizGoTo('cartao-avista')"><span class="ch-icon">⚡</span><div><div class="ch-label">À vista</div><div class="ch-sub">Pago de uma vez na fatura</div></div></div><div class="ch-card" onclick="wizGoTo('cartao-parcelado')"><span class="ch-icon">📆</span><div><div class="ch-label">Parcelada</div><div class="ch-sub">Dividida em várias faturas</div></div></div><div class="ch-card" onclick="wizGoTo('cartao-recorrente')"><span class="ch-icon">🔄</span><div><div class="ch-label">Recorrente</div><div class="ch-sub">Netflix, iCloud, assinaturas...</div></div></div></div>`;return;}
+  if(w.screen==='cartao-avista'){const c=getCartao(d.cartaoId);const hoje=todayStr();const pessoaOpts=pessoasSelect(d.pessoaId);const catOpts2=catsSelect(d.catId,'despesa');body.innerHTML=`<div class="step-back" onclick="wizGoTo('cartao-tipo')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Restaurante..." value="${d.descricao||''}"></div><div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div><div class="fld"><label>Data da compra</label><input id="w-date" type="date" value="${d.data||hoje}" oninput="atualizarPreviewFatura(this.value)"></div>${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}${d.data?previewFatura(d.data,c):'<div id="fatura-preview"></div>'}`;foot.innerHTML=`<button class="btn btn-p btn-full" onclick="salvarCartaoAvista()">Salvar</button>`;return;}
+  if(w.screen==='cartao-parcelado'){const hoje=todayStr();const pessoaOpts=pessoasSelect(d.pessoaId);const catOpts2=catsSelect(d.catId,'despesa');body.innerHTML=`<div class="step-back" onclick="wizGoTo('cartao-tipo')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Geladeira..." value="${d.descricao||''}"></div><div class="fld"><label>Valor total (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}" oninput="atualizarPreviewParc()"></div><div class="fld"><label>Nº de parcelas</label><input id="w-parc" type="number" min="2" max="60" placeholder="Ex: 10" value="${d.parcelas||''}" oninput="atualizarPreviewParc()"></div><div class="fld"><label>Data da compra</label><input id="w-date" type="date" value="${d.data||hoje}" oninput="atualizarPreviewParc()"></div>${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}  <div id="parc-preview"></div>`;foot.innerHTML=`<button class="btn btn-p btn-full" onclick="salvarParcelado()">Salvar parcelamento</button>`;return;}
+  if(w.screen==='cartao-recorrente'){const hoje=todayStr();const pessoaOpts=pessoasSelect(d.pessoaId);const catOpts2=catsSelect(d.catId,'despesa');body.innerHTML=`<div class="step-back" onclick="wizGoTo('cartao-tipo')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Netflix, Spotify..." value="${d.descricao||''}"></div><div class="fld"><label>Valor mensal (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div><div class="fld"><label>Primeira cobrança</label><input id="w-date" type="date" value="${d.data||hoje}"></div>${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}  <div class="fld"><p class="wiz-q" style="font-size:14px;margin-bottom:8px">Tem fim?</p><div class="bin-grp"><button type="button" class="bin-btn ${d.temFim===false?'sel':''}" data-fim-btn="nao" onclick="wizSetTemFim(false)">Não</button><button type="button" class="bin-btn ${d.temFim===true?'sel':''}" data-fim-btn="sim" onclick="wizSetTemFim(true)">Sim</button></div></div><div id="fim-wrap" style="display:${d.temFim?'block':'none'}"><div class="fld"><label>Até quando? (meses)</label><input id="w-meses" type="number" min="1" max="120" placeholder="Ex: 12" value="${d.meses||''}"></div></div>`;foot.innerHTML=`<button class="btn btn-p btn-full" onclick="salvarCartaoRecorrente()">Salvar recorrência</button>`;return;}
+  if(w.screen==='recorrente'){const hoje=todayStr();const formaOpts=['Boleto','PIX','Débito automático','Outro'].map(f=>`<option ${d.forma===f?'selected':''}>${f}</option>`).join('');const pessoaOpts=pessoasSelect(d.pessoaId);const catOpts2=catsSelect(d.catId,'despesa');body.innerHTML=`<div class="step-back" onclick="wizBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Água, luz, escola..." value="${d.descricao||''}"></div><div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div><div class="fld"><label>Forma de pagamento</label><select id="w-forma"><option value="">—</option>${formaOpts}</select></div><div class="fld"><label>Primeiro vencimento</label><input id="w-date" type="date" value="${d.data||hoje}"></div>${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}  <div class="fld"><p class="wiz-q" style="font-size:14px;margin-bottom:8px">Tem fim?</p><div class="bin-grp"><button type="button" class="bin-btn ${d.temFim===false?'sel':''}" data-fim-btn="nao" onclick="wizSetTemFim(false)">Não</button><button type="button" class="bin-btn ${d.temFim===true?'sel':''}" data-fim-btn="sim" onclick="wizSetTemFim(true)">Sim</button></div></div><div id="fim-wrap" style="display:${d.temFim?'block':'none'}"><div class="fld"><label>Duração (meses)</label><input id="w-meses" type="number" min="1" max="120" placeholder="Ex: 12" value="${d.meses||''}"></div></div>`;foot.innerHTML=`<button class="btn btn-p btn-full" onclick="salvarRecorrente()">Salvar recorrência</button>`;return;}
 }
 
-function renderReceitaWizard(w, body, foot){
-  const d = w.data;
-
-  if(w.screen==='start'){
-    body.innerHTML = `
-      <p class="wiz-q">Que tipo de entrada é essa?</p>
-      <div class="choices">
-        <div class="ch-card" onclick="wizReceitaSubtipo('salario')">
-          <span class="ch-icon">💼</span>
-          <div><div class="ch-label">Salário</div><div class="ch-sub">Renda mensal principal</div></div>
-        </div>
-        <div class="ch-card" onclick="wizReceitaSubtipo('extra')">
-          <span class="ch-icon">✨</span>
-          <div><div class="ch-label">Entrada extra</div><div class="ch-sub">Bônus, reembolso, freelance, vendas...</div></div>
-        </div>
-      </div>`;
-    return;
-  }
-
-  if(w.screen==='salario'){
-    const hoje = todayStr();
-    const contaOpts2 = contasSelect(d.contaId);
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'receita');
-    if(!contaOpts2){
-      body.innerHTML = `<div class="empty"><div class="empty-emoji">🏦</div>
-        <div class="empty-t">Você ainda não cadastrou nenhuma conta</div>
-        <div class="empty-s">Cadastre uma conta para registrar receitas</div>
-        <button class="btn btn-p" onclick="closeModal();setCadTab('contas');setView('cadastros')">Cadastrar conta</button></div>`;
-      return;
-    }
-    body.innerHTML = `
-      <div class="step-back" onclick="wizBack()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Salário empresa X" value="${d.descricao||'Salário'}"></div>
-      <div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div>
-      <div class="fld"><label>Conta de destino</label><select id="w-conta"><option value="">—</option>${contaOpts2}</select></div>
-      <div class="fld"><label>Data em que esse dinheiro entrou ou vai entrar</label><input id="w-date" type="date" value="${d.data||hoje}"></div>
-      ${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}
-      ${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}
-      <div class="fld">
-        <p class="wiz-q" style="font-size:14px;margin-bottom:8px">Esse dinheiro já entrou?</p>
-        <div class="bin-grp">
-          <button type="button" class="bin-btn ${d.recebido===true?'sel':''}" data-rec-sim onclick="wizSetRecebido(true)">Sim</button>
-          <button type="button" class="bin-btn ${d.recebido===false?'sel':''}" data-rec-nao onclick="wizSetRecebido(false)">Não ainda</button>
-        </div>
-      </div>
-      </div>`;
-    foot.innerHTML = `<button class="btn btn-p btn-full" onclick="salvarSalario()">Salvar salário</button>`;
-    return;
-  }
-
-  if(w.screen==='extra'){
-    const hoje = todayStr();
-    const contaOpts2 = contasSelect(d.contaId);
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'receita');
-    if(!contaOpts2){
-      body.innerHTML = `<div class="empty"><div class="empty-emoji">🏦</div>
-        <div class="empty-t">Você ainda não cadastrou nenhuma conta</div>
-        <div class="empty-s">Cadastre uma conta para registrar receitas</div>
-        <button class="btn btn-p" onclick="closeModal();setCadTab('contas');setView('cadastros')">Cadastrar conta</button></div>`;
-      return;
-    }
-    body.innerHTML = `
-      <div class="step-back" onclick="wizBack()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar
-      </div>
-      <div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Freelance, reembolso..." value="${d.descricao||''}"></div>
-      <div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div>
-  if(w.screen==='extra'){
-    const hoje = todayStr();
-    const contaOpts2 = contasSelect(d.contaId);
-    const pessoaOpts = pessoasSelect(d.pessoaId);
-    const catOpts2 = catsSelect(d.catId,'receita');
-    if(!contaOpts2){
-        <p class="wiz-q" style="font-size:14px;margin-bottom:8px">Esse dinheiro já entrou?</p>
-        <div class="bin-grp">
-          <button type="button" class="bin-btn ${d.recebido===true?'sel':''}" data-rec-sim onclick="wizSetRecebido(true)">Sim</button>
-          <button type="button" class="bin-btn ${d.recebido===false?'sel':''}" data-rec-nao onclick="wizSetRecebido(false)">Não ainda</button>
-        </div>
-      </div>
-      <div class="fld">
-        <p class="wiz-q" style="font-size:14px;margin-bottom:8px">Quer deixar essa entrada repetindo todo mês?</p>
-        <div class="bin-grp">
-          <button type="button" class="bin-btn ${d.repete===false?'sel':''}" id="repete-n" onclick="wizSetRepete(false)">Não</button>
-          <button type="button" class="bin-btn ${d.repete===true?'sel':''}" id="repete-s" onclick="wizSetRepete(true)">Sim, todo mês</button>
-        </div>
-      </div>
-      <div id="repete-wrap" style="display:${d.repete?'block':'none'}">
-        <div class="fld">
-          <p class="wiz-q" style="font-size:14px;margin-bottom:8px">Tem fim?</p>
-          <div class="bin-grp">
-            <button type="button" class="bin-btn ${d.temFim===false?'sel':''}" data-fim-btn="nao" onclick="wizSetTemFim(false)">Não</button>
-            <button type="button" class="bin-btn ${d.temFim===true?'sel':''}" data-fim-btn="sim" onclick="wizSetTemFim(true)">Sim</button>
-          </div>
-        </div>
-        <div id="fim-wrap2" style="display:${d.temFim?'block':'none'}">
-          <div class="fld"><label>Duração (meses)</label><input id="w-meses" type="number" min="1" max="120" placeholder="Ex: 12" value="${d.meses||''}"></div>
-        </div>
-      </div>`;
-    foot.innerHTML = `<button class="btn btn-p btn-full" onclick="salvarEntradaExtra()">Salvar entrada</button>`;
-    return;
-  }
+function renderReceitaWizard(w,body,foot){
+  const d=w.data;
+  if(w.screen==='start'){body.innerHTML=`<p class="wiz-q">Que tipo de entrada é essa?</p><div class="choices"><div class="ch-card" onclick="wizReceitaSubtipo('salario')"><span class="ch-icon">💼</span><div><div class="ch-label">Salário</div><div class="ch-sub">Renda mensal principal</div></div></div><div class="ch-card" onclick="wizReceitaSubtipo('extra')"><span class="ch-icon">✨</span><div><div class="ch-label">Entrada extra</div><div class="ch-sub">Bônus, reembolso, freelance...</div></div></div></div>`;return;}
+  if(w.screen==='salario'){const hoje=todayStr();const contaOpts2=contasSelect(d.contaId);const pessoaOpts=pessoasSelect(d.pessoaId);const catOpts2=catsSelect(d.catId,'receita');if(!contaOpts2){body.innerHTML=`<div class="empty"><div class="empty-emoji">🏦</div><div class="empty-t">Nenhuma conta cadastrada</div><div class="empty-s">Cadastre uma conta primeiro</div><button class="btn btn-p" onclick="closeModal();setCadTab('contas');setView('cadastros')">Cadastrar conta</button></div>`;return;}body.innerHTML=`<div class="step-back" onclick="wizBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Salário empresa X" value="${d.descricao||'Salário'}"></div><div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div><div class="fld"><label>Conta de destino</label><select id="w-conta"><option value="">—</option>${contaOpts2}</select></div><div class="fld"><label>Data</label><input id="w-date" type="date" value="${d.data||hoje}"></div>${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}  <div class="fld"><p class="wiz-q" style="font-size:14px;margin-bottom:8px">Esse dinheiro já entrou?</p><div class="bin-grp"><button type="button" class="bin-btn ${d.recebido===true?'sel':''}" data-rec-sim onclick="wizSetRecebido(true)">Sim</button><button type="button" class="bin-btn ${d.recebido===false?'sel':''}" data-rec-nao onclick="wizSetRecebido(false)">Não ainda</button></div></div>`;foot.innerHTML=`<button class="btn btn-p btn-full" onclick="salvarSalario()">Salvar salário</button>`;return;}
+  if(w.screen==='extra'){const hoje=todayStr();const contaOpts2=contasSelect(d.contaId);const pessoaOpts=pessoasSelect(d.pessoaId);const catOpts2=catsSelect(d.catId,'receita');if(!contaOpts2){body.innerHTML=`<div class="empty"><div class="empty-emoji">🏦</div><div class="empty-t">Nenhuma conta cadastrada</div><div class="empty-s">Cadastre uma conta primeiro</div><button class="btn btn-p" onclick="closeModal();setCadTab('contas');setView('cadastros')">Cadastrar conta</button></div>`;return;}body.innerHTML=`<div class="step-back" onclick="wizBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>Voltar</div><div class="fld"><label>Descrição</label><input id="w-desc" placeholder="Ex: Freelance, reembolso..." value="${d.descricao||''}"></div><div class="fld"><label>Valor (R$)</label><input id="w-val" type="number" step="0.01" placeholder="0,00" value="${d.valor||''}"></div><div class="fld"><label>Conta de destino</label><select id="w-conta"><option value="">—</option>${contaOpts2}</select></div><div class="fld"><label>Data</label><input id="w-date" type="date" value="${d.data||hoje}"></div>${pessoaOpts?`<div class="fld"><label>Pessoa</label><select id="w-pessoa"><option value="">—</option>${pessoaOpts}</select></div>`:''}${catOpts2?`<div class="fld"><label>Categoria</label><select id="w-cat"><option value="">—</option>${catOpts2}</select></div>`:''}  <div class="fld"><p class="wiz-q" style="font-size:14px;margin-bottom:8px">Esse dinheiro já entrou?</p><div class="bin-grp"><button type="button" class="bin-btn ${d.recebido===true?'sel':''}" data-rec-sim onclick="wizSetRecebido(true)">Sim</button><button type="button" class="bin-btn ${d.recebido===false?'sel':''}" data-rec-nao onclick="wizSetRecebido(false)">Não ainda</button></div></div><div class="fld"><p class="wiz-q" style="font-size:14px;margin-bottom:8px">Quer deixar repetindo todo mês?</p><div class="bin-grp"><button type="button" class="bin-btn ${d.repete===false?'sel':''}" id="repete-n" onclick="wizSetRepete(false)">Não</button><button type="button" class="bin-btn ${d.repete===true?'sel':''}" id="repete-s" onclick="wizSetRepete(true)">Sim, todo mês</button></div></div><div id="repete-wrap" style="display:${d.repete?'block':'none'}"><div class="fld"><p class="wiz-q" style="font-size:14px;margin-bottom:8px">Tem fim?</p><div class="bin-grp"><button type="button" class="bin-btn ${d.temFim===false?'sel':''}" data-fim-btn="nao" onclick="wizSetTemFim(false)">Não</button><button type="button" class="bin-btn ${d.temFim===true?'sel':''}" data-fim-btn="sim" onclick="wizSetTemFim(true)">Sim</button></div></div><div id="fim-wrap2" style="display:${d.temFim?'block':'none'}"><div class="fld"><label>Duração (meses)</label><input id="w-meses" type="number" min="1" max="120" placeholder="Ex: 12" value="${d.meses||''}"></div></div></div>`;foot.innerHTML=`<button class="btn btn-p btn-full" onclick="salvarEntradaExtra()">Salvar entrada</button>`;return;}
 }
 
 // WIZARD HELPERS
-window.wizBack = ()=>{
-  const w = S.wiz;
-  if(w.tipo==='despesa'){
-    if(w.screen==='avulsa'||w.screen==='cartao-sel'||w.screen==='recorrente') wizGoTo('start');
-    else if(w.screen==='cartao-tipo') wizGoTo('cartao-sel');
-  } else {
-    if(w.screen==='salario'||w.screen==='extra') wizGoTo('start');
-  }
-};
-window.wizGoTo = (sc)=>{
-  if((sc==='cartao-recorrente' || sc==='recorrente') && typeof S.wiz.data.temFim === 'undefined'){
-    S.wiz.data.temFim = null;
-  }
-  S.wiz.screen=sc;
-  renderWizard();
-};
-window.wizDespesaSubtipo = (st)=>{
-  if(st==='avulsa') wizGoTo('avulsa');
-  else if(st==='cartao') wizGoTo('cartao-sel');
-  else wizGoTo('recorrente');
-};
-window.wizReceitaSubtipo = (st)=>{ wizGoTo(st==='salario'?'salario':'extra'); };
-window.wizSelectCartao = (id)=>{ S.wiz.data.cartaoId=id; wizGoTo('cartao-tipo'); };
-window.wizSetPago = (v)=>{
-  S.wiz.data.pago=v;
-  const vw = document.getElementById('venc-wrap');
-  if(vw) vw.style.display = v?'none':'block';
-  document.getElementById('pago-s')?.classList.toggle('sel',v);
-  document.getElementById('pago-n')?.classList.toggle('sel',!v);
-};
-window.wizSetTemFim = (v)=>{
-  S.wiz.data.temFim=v;
-  const fw = document.getElementById('fim-wrap')||document.getElementById('fim-wrap2');
-  if(fw) fw.style.display=v?'block':'none';
-  document.querySelectorAll('[data-fim-btn="sim"]').forEach(el=>el.classList.toggle('sel',v===true));
-  document.querySelectorAll('[data-fim-btn="nao"]').forEach(el=>el.classList.toggle('sel',v===false));
-};
-window.wizSetProgresso = (v)=>{
-  S.wiz.data.progresso=v;
-  document.getElementById('prog-s')?.classList.toggle('sel',v);
-  document.getElementById('prog-n')?.classList.toggle('sel',!v);
-};
-window.wizSetRecebido = (v)=>{
-  S.wiz.data.recebido=v;
-  document.querySelectorAll('[data-rec-sim]').forEach(el=>el.classList.toggle('sel',v));
-  document.querySelectorAll('[data-rec-nao]').forEach(el=>el.classList.toggle('sel',!v));
-};
-window.wizSetVariavel = (v)=>{ S.wiz.data.variavel=v; };
-window.wizSetRepete = (v)=>{
-  S.wiz.data.repete=v;
-  const rw = document.getElementById('repete-wrap');
-  if(rw) rw.style.display=v?'block':'none';
-  document.getElementById('repete-s')?.classList.toggle('sel',v);
-  document.getElementById('repete-n')?.classList.toggle('sel',!v);
-};
+window.wizBack=()=>{const w=S.wiz;if(w.tipo==='despesa'){if(w.screen==='avulsa'||w.screen==='cartao-sel'||w.screen==='recorrente')wizGoTo('start');else if(w.screen==='cartao-tipo')wizGoTo('cartao-sel');}else{if(w.screen==='salario'||w.screen==='extra')wizGoTo('start');}};
+window.wizGoTo=(sc)=>{S.wiz.screen=sc;renderWizard();};
+window.wizDespesaSubtipo=(st)=>{if(st==='avulsa')wizGoTo('avulsa');else if(st==='cartao')wizGoTo('cartao-sel');else wizGoTo('recorrente');};
+window.wizReceitaSubtipo=(st)=>{wizGoTo(st==='salario'?'salario':'extra');};
+window.wizSelectCartao=(id)=>{S.wiz.data.cartaoId=id;wizGoTo('cartao-tipo');};
+window.wizSetPago=(v)=>{S.wiz.data.pago=v;const vw=document.getElementById('venc-wrap');if(vw)vw.style.display=v?'none':'block';document.getElementById('pago-s')?.classList.toggle('sel',v);document.getElementById('pago-n')?.classList.toggle('sel',!v);};
+window.wizSetTemFim=(v)=>{S.wiz.data.temFim=v;const fw=document.getElementById('fim-wrap')||document.getElementById('fim-wrap2');if(fw)fw.style.display=v?'block':'none';document.querySelectorAll('[data-fim-btn="sim"]').forEach(el=>el.classList.toggle('sel',v===true));document.querySelectorAll('[data-fim-btn="nao"]').forEach(el=>el.classList.toggle('sel',v===false));};
+window.wizSetRecebido=(v)=>{S.wiz.data.recebido=v;document.querySelectorAll('[data-rec-sim]').forEach(el=>el.classList.toggle('sel',v));document.querySelectorAll('[data-rec-nao]').forEach(el=>el.classList.toggle('sel',!v));};
+window.wizSetRepete=(v)=>{S.wiz.data.repete=v;const rw=document.getElementById('repete-wrap');if(rw)rw.style.display=v?'block':'none';document.getElementById('repete-s')?.classList.toggle('sel',v);document.getElementById('repete-n')?.classList.toggle('sel',!v);};
 
-// FATURA PREVIEW
-window.atualizarPreviewFatura = (dateVal)=>{
-  const c = getCartao(S.wiz?.data?.cartaoId);
-  const p = document.getElementById('fatura-preview');
-  if(p&&c&&dateVal) p.innerHTML = previewFatura(dateVal, c);
-};
-function previewFatura(dateVal, c){
-  if(!c||!dateVal) return '';
-  const d = new Date(dateVal+'T12:00:00');
-  const v = calcVencimentoFatura(d, c.diaFechamento, c.diaVencimento);
-  return `<div class="info-box">Esta compra vai cair na fatura que vence em ${fmtDate(v)}</div>`;
-}
-
-window.atualizarPreviewParc = ()=>{
-  const val = parseFloat(document.getElementById('w-val')?.value)||0;
-  const parc = parseInt(document.getElementById('w-parc')?.value)||0;
-  const dt = document.getElementById('w-date')?.value;
-  const c = getCartao(S.wiz?.data?.cartaoId);
-  const p = document.getElementById('parc-preview');
-  if(!p) return;
-  if(val&&parc&&dt&&c){
-    const d = new Date(dt+'T12:00:00');
-    const v1 = calcVencimentoFatura(d, c.diaFechamento, c.diaVencimento);
-    const vlast = new Date(v1); vlast.setMonth(vlast.getMonth()+parc-1);
-    p.innerHTML = `<div class="info-box">
-      ${parc}x de ${fmt(val/parc)}<br>
-      Primeira parcela: fatura com vencimento em ${fmtDate(v1)}<br>
-      Última parcela: ${fmtDate(vlast)}
-    </div>`;
-  } else p.innerHTML='';
-};
+window.atualizarPreviewFatura=(dateVal)=>{const c=getCartao(S.wiz?.data?.cartaoId);const p=document.getElementById('fatura-preview');if(p&&c&&dateVal)p.innerHTML=previewFatura(dateVal,c);};
+function previewFatura(dateVal,c){if(!c||!dateVal)return'';const d=new Date(dateVal+'T12:00:00');const v=calcVencimentoFatura(d,c.diaFechamento,c.diaVencimento);return`<div class="info-box">Esta compra vai cair na fatura que vence em ${fmtDate(v)}</div>`;}
+window.atualizarPreviewParc=()=>{const val=parseFloat(document.getElementById('w-val')?.value)||0;const parc=parseInt(document.getElementById('w-parc')?.value)||0;const dt=document.getElementById('w-date')?.value;const c=getCartao(S.wiz?.data?.cartaoId);const p=document.getElementById('parc-preview');if(!p)return;if(val&&parc&&dt&&c){const d=new Date(dt+'T12:00:00');const v1=calcVencimentoFatura(d,c.diaFechamento,c.diaVencimento);const vlast=new Date(v1);vlast.setMonth(vlast.getMonth()+parc-1);p.innerHTML=`<div class="info-box">${parc}x de ${fmt(val/parc)}<br>Primeira: fatura com vencimento em ${fmtDate(v1)}<br>Última: ${fmtDate(vlast)}</div>`;}else p.innerHTML='';};
 
 // ─── SAVE FUNCTIONS ───────────────────────────────────────────────────────────
-function getCommonFields(){
-  return {
-    descricao: document.getElementById('w-desc')?.value||'',
-    valor: parseFloat(document.getElementById('w-val')?.value)||0,
-    pessoaId: document.getElementById('w-pessoa')?.value||'',
-    catId: document.getElementById('w-cat')?.value||'',
-  };
+function getCommonFields(){return{descricao:document.getElementById('w-desc')?.value||'',valor:parseFloat(document.getElementById('w-val')?.value)||0,pessoaId:document.getElementById('w-pessoa')?.value||'',catId:document.getElementById('w-cat')?.value||''};}
+
+window.salvarAvulsa=async()=>{const cf=getCommonFields();const dt=document.getElementById('w-date')?.value;const venc=document.getElementById('w-venc')?.value;const forma=document.getElementById('w-forma')?.value||'';const pago=S.wiz.data.pago===true;const d=new Date((dt||todayStr())+'T12:00:00');const item={tipo:'despesa',subTipo:'avulsa',...cf,formaPagamento:forma,dataRelevante:d,mesAno:mesAnoStr(d.getMonth(),d.getFullYear()),status:pago?'pago':'pendente',criadoEm:new Date()};if(pago){item.pagamentoData=d;item.vencimento=d;}else{const vd=new Date((venc||dt||todayStr())+'T12:00:00');item.vencimento=vd;item.dataRelevante=vd;item.mesAno=mesAnoStr(vd.getMonth(),vd.getFullYear());}await saveItem(item);closeModal();render();};
+window.salvarCartaoAvista=async()=>{const cf=getCommonFields();const dt=document.getElementById('w-date')?.value;const c=getCartao(S.wiz.data.cartaoId);const d=new Date((dt||todayStr())+'T12:00:00');const venc=calcVencimentoFatura(d,c.diaFechamento,c.diaVencimento);const item={tipo:'despesa',subTipo:'cartao_avista',...cf,cartaoId:S.wiz.data.cartaoId,dataCompra:d,dataRelevante:venc,vencimento:venc,mesAno:mesAnoStr(venc.getMonth(),venc.getFullYear()),status:'pendente',criadoEm:new Date()};await saveItem(item);closeModal();render();};
+window.salvarParcelado=async()=>{const cf=getCommonFields();const dt=document.getElementById('w-date')?.value;const parc=parseInt(document.getElementById('w-parc')?.value)||2;const c=getCartao(S.wiz.data.cartaoId);const d=new Date((dt||todayStr())+'T12:00:00');const v1=calcVencimentoFatura(d,c.diaFechamento,c.diaVencimento);const recId=`rec_${Date.now()}`;const valorParc=cf.valor/parc;const items=gerarParcelas({tipo:'despesa',subTipo:'cartao_parcelado',...cf,valor:valorParc,descricaoBase:cf.descricao,cartaoId:S.wiz.data.cartaoId,dataCompra:d,criadoEm:new Date()},v1,parc,recId);for(const it of items)await saveItem(it);closeModal();render();};
+window.salvarCartaoRecorrente=async()=>{const cf=getCommonFields();const dt=document.getElementById('w-date')?.value;const meses=parseInt(document.getElementById('w-meses')?.value)||36;const temFim=S.wiz.data.temFim===true;const totalMeses=temFim?meses:36;const c=getCartao(S.wiz.data.cartaoId);const d=new Date((dt||todayStr())+'T12:00:00');const v1=calcVencimentoFatura(d,c.diaFechamento,c.diaVencimento);const recId=`rec_${Date.now()}`;const base={tipo:'despesa',subTipo:'cartao_recorrente',...cf,cartaoId:S.wiz.data.cartaoId,dataCompra:d,criadoEm:new Date()};const items=gerarRecorrencias(base,v1,totalMeses,recId,'despesa');for(const it of items)await saveItem(it);closeModal();render();};
+window.salvarRecorrente=async()=>{const cf=getCommonFields();const dt=document.getElementById('w-date')?.value;const forma=document.getElementById('w-forma')?.value||'';const meses=parseInt(document.getElementById('w-meses')?.value)||36;const temFim=S.wiz.data.temFim===true;const totalMeses=temFim?meses:36;const d=new Date((dt||todayStr())+'T12:00:00');const recId=`rec_${Date.now()}`;const base={tipo:'despesa',subTipo:'recorrente',...cf,formaPagamento:forma,criadoEm:new Date()};const items=gerarRecorrencias(base,d,totalMeses,recId,'despesa');for(const it of items)await saveItem(it);closeModal();render();};
+window.salvarSalario=async()=>{const cf=getCommonFields();const dt=document.getElementById('w-date')?.value;const contaId=document.getElementById('w-conta')?.value||'';const recebido=S.wiz.data.recebido===true;const d=new Date((dt||todayStr())+'T12:00:00');const ma=mesAnoStr(d.getMonth(),d.getFullYear());const item={tipo:'receita',subTipo:'salario',...cf,contaId,dataRelevante:d,mesAno:ma,status:recebido?'recebido':'previsto',criadoEm:new Date()};if(recebido)item.pagamentoData=d;await saveItem(item);closeModal();render();};
+window.salvarEntradaExtra=async()=>{const cf=getCommonFields();const dt=document.getElementById('w-date')?.value;const contaId=document.getElementById('w-conta')?.value||'';const recebido=S.wiz.data.recebido===true;const repete=S.wiz.data.repete===true;const temFim=S.wiz.data.temFim===true;const meses=parseInt(document.getElementById('w-meses')?.value)||36;const d=new Date((dt||todayStr())+'T12:00:00');if(!repete){const ma=mesAnoStr(d.getMonth(),d.getFullYear());const it={tipo:'receita',subTipo:'entrada_extra',...cf,contaId,dataRelevante:d,mesAno:ma,status:recebido?'recebido':'previsto',criadoEm:new Date()};if(recebido)it.pagamentoData=d;await saveItem(it);}else{const totalMeses=temFim?meses:36;const recId=`rec_${Date.now()}`;for(let i=0;i<totalMeses;i++){const md=new Date(d);md.setMonth(md.getMonth()+i);const ma=mesAnoStr(md.getMonth(),md.getFullYear());const isFirst=i===0;const st=(isFirst&&recebido)?'recebido':'previsto';const it={tipo:'receita',subTipo:'entrada_extra',...cf,contaId,dataRelevante:md,mesAno:ma,status:st,recorrenciaId:recId,criadoEm:new Date()};if(isFirst&&recebido)it.pagamentoData=d;await saveItem(it);}}closeModal();render();};
+
+// ─── CADASTROS ────────────────────────────────────────────────────────────────
+window.openCadastroForm=(tab)=>{openModal(getCadTitle(tab));renderCadastroForm(tab,null);};
+window.editCadastro=(tab,id)=>{const items=getCadItems(tab);const item=items.find(x=>x.id===id);openModal('Editar '+getCadTitleSingle(tab));renderCadastroForm(tab,item);};
+window.deleteCadastro=async(tab,id)=>{if(!confirm('Excluir este cadastro?'))return;await deleteDoc(doc(db,getCadCol(tab),id));S.data[getCadKey(tab)]=S.data[getCadKey(tab)].filter(x=>x.id!==id);render();};
+function getCadTitle(t){return{pessoas:'Nova pessoa',categorias:'Nova categoria',cartoes:'Novo cartão',contas:'Nova conta'}[t]||'Novo';}
+function getCadTitleSingle(t){return{pessoas:'pessoa',categorias:'categoria',cartoes:'cartão',contas:'conta'}[t]||'';}
+function getCadCol(t){return{pessoas:'pessoas',categorias:'categorias',cartoes:'cartoes',contas:'contas'}[t]||t;}
+function getCadKey(t){return{pessoas:'pessoas',categorias:'cats',cartoes:'cartoes',contas:'contas'}[t]||t;}
+function getCadItems(t){return t==='categorias'?S.data.cats:S.data[t]||[];}
+
+function renderCadastroForm(tab,item){
+  const body=document.getElementById('m-body');const foot=document.getElementById('m-foot');const id=item?.id;const st=item?.status!=='inativo'?true:!item;
+  let fields=`<div class="fld"><label>Nome</label><input id="cf-nome" value="${item?.nome||''}" placeholder="Nome..."></div><div class="fld"><label>Status</label><div class="bin-grp"><button type="button" class="bin-btn ${st?'sel':''}" id="cf-ativo" onclick="this.classList.add('sel');document.getElementById('cf-inativo').classList.remove('sel')">Ativo</button><button type="button" class="bin-btn ${!st?'sel':''}" id="cf-inativo" onclick="this.classList.add('sel');document.getElementById('cf-ativo').classList.remove('sel')">Inativo</button></div></div>`;
+  if(tab==='categorias'){const tipoVal=item?.tipo||'despesa';fields+=`<div class="fld"><label>Tipo</label><select id="cf-tipo"><option value="despesa" ${tipoVal==='despesa'?'selected':''}>Despesa</option><option value="receita" ${tipoVal==='receita'?'selected':''}>Receita</option><option value="ambos" ${tipoVal==='ambos'?'selected':''}>Ambos</option></select></div>`;}
+  if(tab==='cartoes'){fields+=`<div class="row2"><div class="fld"><label>Dia fechamento</label><input id="cf-fecha" type="number" min="1" max="31" value="${item?.diaFechamento||''}"></div><div class="fld"><label>Dia vencimento</label><input id="cf-vence" type="number" min="1" max="31" value="${item?.diaVencimento||''}"></div></div><div class="fld"><label>Limite (R$)</label><input id="cf-limite" type="number" step="0.01" value="${item?.limite||''}"></div>`;}
+  if(tab==='contas'){const tpVal=item?.tipo||'corrente';fields+=`<div class="fld"><label>Tipo de conta</label><select id="cf-tipo-conta"><option value="corrente" ${tpVal==='corrente'?'selected':''}>Conta corrente</option><option value="poupanca" ${tpVal==='poupanca'?'selected':''}>Poupança</option><option value="digital" ${tpVal==='digital'?'selected':''}>Carteira digital</option><option value="dinheiro" ${tpVal==='dinheiro'?'selected':''}>Dinheiro físico</option></select></div>`;}
+  body.innerHTML=fields;
+  foot.innerHTML=`<button class="btn btn-p btn-full" onclick="saveCadastro('${tab}','${id||''}')">Salvar</button><button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;
 }
 
-window.salvarAvulsa = async()=>{
-  const cf = getCommonFields();
-  const dt = document.getElementById('w-date')?.value;
-  const venc = document.getElementById('w-venc')?.value;
-  const forma = document.getElementById('w-forma')?.value||'';
-  const pago = S.wiz.data.pago===true;
-  const d = new Date((dt||todayStr())+'T12:00:00');
-  const item = {
-    tipo:'despesa', subTipo:'avulsa',
-    ...cf, formaPagamento:forma,
-    dataRelevante: d,
-    mesAno: mesAnoStr(d.getMonth(), d.getFullYear()),
-    status: pago?'pago':'pendente',
-    criadoEm: new Date()
-  };
-  if(pago){ item.pagamentoData=d; item.vencimento=d; }
-  else { const vd = new Date((venc||dt||todayStr())+'T12:00:00'); item.vencimento=vd; item.dataRelevante=vd; item.mesAno=mesAnoStr(vd.getMonth(),vd.getFullYear()); }
-  await saveItem(item);
-  closeModal(); render();
-};
-
-window.salvarCartaoAvista = async()=>{
-  const cf = getCommonFields();
-  const dt = document.getElementById('w-date')?.value;
-  const c = getCartao(S.wiz.data.cartaoId);
-  const d = new Date((dt||todayStr())+'T12:00:00');
-  const venc = calcVencimentoFatura(d, c.diaFechamento, c.diaVencimento);
-  const item = {
-    tipo:'despesa', subTipo:'cartao_avista',
-    ...cf, cartaoId:S.wiz.data.cartaoId,
-    dataCompra: d, dataRelevante: venc, vencimento: venc,
-    mesAno: mesAnoStr(venc.getMonth(), venc.getFullYear()),
-    status: 'pendente', criadoEm: new Date()
-  };
-  await saveItem(item);
-  closeModal(); render();
-};
-
-window.salvarParcelado = async()=>{
-  const cf = getCommonFields();
-  const dt = document.getElementById('w-date')?.value;
-  const parc = parseInt(document.getElementById('w-parc')?.value)||2;
-  const c = getCartao(S.wiz.data.cartaoId);
-  const d = new Date((dt||todayStr())+'T12:00:00');
-  const v1 = calcVencimentoFatura(d, c.diaFechamento, c.diaVencimento);
-  const recId = `rec_${Date.now()}`;
-  const valorParc = cf.valor/parc;
-  const items = gerarParcelas({
-    tipo:'despesa', subTipo:'cartao_parcelado',
-    ...cf, valor:valorParc, descricaoBase:cf.descricao,
-    cartaoId:S.wiz.data.cartaoId,
-    dataCompra:d, criadoEm:new Date()
-  }, v1, parc, recId);
-  for(const it of items) await saveItem(it);
-  closeModal(); render();
-};
-
-window.salvarCartaoRecorrente = async()=>{
-  const cf = getCommonFields();
-  const dt = document.getElementById('w-date')?.value;
-  const meses = parseInt(document.getElementById('w-meses')?.value)||36;
-  const temFim = S.wiz.data.temFim===true;
-  const totalMeses = temFim ? meses : 36;
-  const c = getCartao(S.wiz.data.cartaoId);
-  const d = new Date((dt||todayStr())+'T12:00:00');
-  const v1 = calcVencimentoFatura(d, c.diaFechamento, c.diaVencimento);
-  const recId = `rec_${Date.now()}`;
-  const base = { tipo:'despesa', subTipo:'cartao_recorrente', ...cf, cartaoId:S.wiz.data.cartaoId, dataCompra:d, criadoEm:new Date() };
-  const items = gerarRecorrencias(base, v1, totalMeses, recId, 'despesa');
-  for(const it of items) await saveItem(it);
-  closeModal(); render();
-};
-
-window.salvarRecorrente = async()=>{
-  const cf = getCommonFields();
-  const dt = document.getElementById('w-date')?.value;
-  const forma = document.getElementById('w-forma')?.value||'';
-  const meses = parseInt(document.getElementById('w-meses')?.value)||36;
-  const temFim = S.wiz.data.temFim===true;
-  const totalMeses = temFim ? meses : 36;
-  const progresso = S.wiz.data.progresso===true;
-  const d = new Date((dt||todayStr())+'T12:00:00');
-  const recId = `rec_${Date.now()}`;
-  const base = { tipo:'despesa', subTipo:'recorrente', ...cf, formaPagamento:forma, acompanharProgresso:progresso, criadoEm:new Date() };
-  const items = gerarRecorrencias(base, d, totalMeses, recId, 'despesa');
-  if(progresso&&temFim){
-    items.forEach((it,i)=>{ it.parcelaAtual=i+1; it.totalParcelas=totalMeses; it.descricaoBase=cf.descricao; });
-  }
-  for(const it of items) await saveItem(it);
-  closeModal(); render();
-};
-
-window.salvarSalario = async()=>{
-  const cf = getCommonFields();
-  const dt = document.getElementById('w-date')?.value;
-  const contaId = document.getElementById('w-conta')?.value||'';
-  const recebido = S.wiz.data.recebido===true;
-  const d = new Date((dt||todayStr())+'T12:00:00');
-  const ma = mesAnoStr(d.getMonth(), d.getFullYear());
-  const item = { tipo:'receita', subTipo:'salario', ...cf, contaId, dataRelevante:d, mesAno:ma, status:recebido?'recebido':'previsto', criadoEm:new Date() };
-  if(recebido) item.pagamentoData=d;
-  await saveItem(item);
-  closeModal(); render();
-};
-
-window.salvarEntradaExtra = async()=>{
-  const cf = getCommonFields();
-  const dt = document.getElementById('w-date')?.value;
-  const contaId = document.getElementById('w-conta')?.value||'';
-  const recebido = S.wiz.data.recebido===true;
-  const repete = S.wiz.data.repete===true;
-  const temFim = S.wiz.data.temFim===true;
-  const meses = parseInt(document.getElementById('w-meses')?.value)||36;
-  const d = new Date((dt||todayStr())+'T12:00:00');
-
-  if(!repete){
-    const ma = mesAnoStr(d.getMonth(), d.getFullYear());
-    const it = { tipo:'receita', subTipo:'entrada_extra', ...cf, contaId, dataRelevante:d, mesAno:ma, status:recebido?'recebido':'previsto', criadoEm:new Date() };
-    if(recebido) it.pagamentoData=d;
-    await saveItem(it);
-  } else {
-    const totalMeses = temFim ? meses : 36;
-    const recId = `rec_${Date.now()}`;
-    for(let i=0;i<totalMeses;i++){
-      const md = new Date(d); md.setMonth(md.getMonth()+i);
-      const ma = mesAnoStr(md.getMonth(), md.getFullYear());
-      const isFirst = i===0;
-      const st = (isFirst&&recebido)?'recebido':'previsto';
-      const it = { tipo:'receita', subTipo:'entrada_extra', ...cf, contaId, dataRelevante:md, mesAno:ma, status:st, recorrenciaId:recId, criadoEm:new Date() };
-      if(isFirst&&recebido) it.pagamentoData=d;
-      await saveItem(it);
-    }
-  }
-  closeModal(); render();
-};
-
-// ─── CADASTROS FORMS ──────────────────────────────────────────────────────────
-window.openCadastroForm = (tab)=>{
-  openModal(getCadTitle(tab));
-  renderCadastroForm(tab, null);
-};
-window.editCadastro = (tab, id)=>{
-  const items = getCadItems(tab);
-  const item = items.find(x=>x.id===id);
-  openModal('Editar '+getCadTitleSingle(tab));
-  renderCadastroForm(tab, item);
-};
-window.deleteCadastro = async(tab, id)=>{
-  if(!confirm('Excluir este cadastro?')) return;
-  await deleteDoc(doc(db, getCadCol(tab), id));
-  S.data[getCadKey(tab)] = S.data[getCadKey(tab)].filter(x=>x.id!==id);
-  render();
-};
-
-function getCadTitle(t){ return {pessoas:'Nova pessoa',categorias:'Nova categoria',cartoes:'Novo cartão',contas:'Nova conta'}[t]||'Novo'; }
-function getCadTitleSingle(t){ return {pessoas:'pessoa',categorias:'categoria',cartoes:'cartão',contas:'conta'}[t]||''; }
-function getCadCol(t){ return {pessoas:'pessoas',categorias:'categorias',cartoes:'cartoes',contas:'contas'}[t]||t; }
-function getCadKey(t){ return {pessoas:'pessoas',categorias:'cats',cartoes:'cartoes',contas:'contas'}[t]||t; }
-function getCadItems(t){ return t==='categorias'?S.data.cats:S.data[t]||[]; }
-
-function renderCadastroForm(tab, item){
-  const body = document.getElementById('m-body');
-  const foot = document.getElementById('m-foot');
-  const id = item?.id;
-  const st = item?.status!=='inativo'?true:!item;
-  let fields = `
-    <div class="fld"><label>Nome</label><input id="cf-nome" value="${item?.nome||''}" placeholder="Nome..."></div>
-    <div class="fld"><label>Status</label><div class="bin-grp">
-      <button type="button" class="bin-btn ${st?'sel':''}" id="cf-ativo" onclick="this.classList.add('sel');document.getElementById('cf-inativo').classList.remove('sel')">Ativo</button>
-      <button type="button" class="bin-btn ${!st?'sel':''}" id="cf-inativo" onclick="this.classList.add('sel');document.getElementById('cf-ativo').classList.remove('sel')">Inativo</button>
-    </div></div>`;
-
-  if(tab==='categorias'){
-    const tipoVal = item?.tipo||'despesa';
-    fields += `<div class="fld"><label>Tipo</label><select id="cf-tipo"><option value="despesa" ${tipoVal==='despesa'?'selected':''}>Despesa</option><option value="receita" ${tipoVal==='receita'?'selected':''}>Receita</option><option value="ambos" ${tipoVal==='ambos'?'selected':''}>Ambos</option></select></div>`;
-  }
-  if(tab==='cartoes'){
-    fields += `
-      <div class="row2">
-        <div class="fld"><label>Dia de fechamento</label><input id="cf-fecha" type="number" min="1" max="31" value="${item?.diaFechamento||''}"></div>
-        <div class="fld"><label>Dia de vencimento</label><input id="cf-vence" type="number" min="1" max="31" value="${item?.diaVencimento||''}"></div>
-      </div>
-      <div class="fld"><label>Limite total (R$)</label><input id="cf-limite" type="number" step="0.01" value="${item?.limite||''}"></div>`;
-  }
-  if(tab==='contas'){
-    const tpVal = item?.tipo||'corrente';
-    fields += `<div class="fld"><label>Tipo de conta</label><select id="cf-tipo-conta"><option value="corrente" ${tpVal==='corrente'?'selected':''}>Conta corrente</option><option value="poupanca" ${tpVal==='poupanca'?'selected':''}>Poupança</option><option value="digital" ${tpVal==='digital'?'selected':''}>Carteira digital</option><option value="dinheiro" ${tpVal==='dinheiro'?'selected':''}>Dinheiro físico</option></select></div>`;
-  }
-
-  body.innerHTML = fields;
-  foot.innerHTML = `
-    <button class="btn btn-p btn-full" onclick="saveCadastro('${tab}','${id||''}')">Salvar</button>
-    <button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>`;
-}
-
-window.saveCadastro = async(tab, id)=>{
-  const nome2 = document.getElementById('cf-nome')?.value?.trim()||'';
-  if(!nome2) return alert('Digite um nome');
-  const ativo = document.getElementById('cf-ativo')?.classList.contains('sel');
-  const status = ativo?'ativo':'inativo';
-  let data = { nome:nome2, status };
-
-  if(tab==='categorias') data.tipo = document.getElementById('cf-tipo')?.value||'despesa';
-  if(tab==='cartoes'){
-    data.diaFechamento = parseInt(document.getElementById('cf-fecha')?.value)||1;
-    data.diaVencimento = parseInt(document.getElementById('cf-vence')?.value)||10;
-    data.limite = parseFloat(document.getElementById('cf-limite')?.value)||0;
-  }
-  if(tab==='contas') data.tipo = document.getElementById('cf-tipo-conta')?.value||'corrente';
-
-  const col = getCadCol(tab);
-  const key = getCadKey(tab);
-  if(id){
-    await updateDoc(doc(db,col,id), data);
-    const idx = S.data[key].findIndex(x=>x.id===id);
-    if(idx>=0) S.data[key][idx]={...S.data[key][idx],...data};
-  } else {
-    const ref = await addDoc(collection(db,col), data);
-    S.data[key].push({id:ref.id,...data});
-  }
-  closeModal(); render();
+window.saveCadastro=async(tab,id)=>{
+  const nome2=document.getElementById('cf-nome')?.value?.trim()||'';if(!nome2)return alert('Digite um nome');
+  const ativo=document.getElementById('cf-ativo')?.classList.contains('sel');const status=ativo?'ativo':'inativo';let data={nome:nome2,status};
+  if(tab==='categorias')data.tipo=document.getElementById('cf-tipo')?.value||'despesa';
+  if(tab==='cartoes'){data.diaFechamento=parseInt(document.getElementById('cf-fecha')?.value)||1;data.diaVencimento=parseInt(document.getElementById('cf-vence')?.value)||10;data.limite=parseFloat(document.getElementById('cf-limite')?.value)||0;}
+  if(tab==='contas')data.tipo=document.getElementById('cf-tipo-conta')?.value||'corrente';
+  const col=getCadCol(tab);const key=getCadKey(tab);
+  if(id){await updateDoc(doc(db,col,id),data);const idx=S.data[key].findIndex(x=>x.id===id);if(idx>=0)S.data[key][idx]={...S.data[key][idx],...data};}
+  else{const ref=await addDoc(collection(db,col),data);S.data[key].push({id:ref.id,...data});}
+  closeModal();render();
 };
 
 // ─── HELPER SELECTS ───────────────────────────────────────────────────────────
-function pessoasSelect(sel){
-  const ps = S.data.pessoas.filter(p=>p.status!=='inativo');
-  if(!ps.length) return '';
-  return ps.map(p=>`<option value="${p.id}" ${sel===p.id?'selected':''}>${p.nome}</option>`).join('');
+function pessoasSelect(sel){const ps=S.data.pessoas.filter(p=>p.status!=='inativo');if(!ps.length)return'';return ps.map(p=>`<option value="${p.id}" ${sel===p.id?'selected':''}>${p.nome}</option>`).join('');}
+function catsSelect(sel,tipo){const cs=S.data.cats.filter(c=>c.status!=='inativo'&&(c.tipo==='ambos'||c.tipo===tipo||!tipo));if(!cs.length)return'';return cs.map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${c.nome}</option>`).join('');}
+function contasSelect(sel){const cs=S.data.contas.filter(c=>c.status!=='inativo');if(!cs.length)return'';return cs.map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${c.nome}</option>`).join('');}
+function todayStr(){const n=new Date();return`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+async function bootApp(){
+  try{ await loadData(); }catch(e){ console.error('Firebase error:',e); }
+  document.getElementById('loading-screen').style.display='none';
+  render();
 }
-function catsSelect(sel, tipo){
-  const cs = S.data.cats.filter(c=>c.status!=='inativo'&&(c.tipo==='ambos'||c.tipo===tipo||!tipo));
-  if(!cs.length) return '';
-  return cs.map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${c.nome}</option>`).join('');
-}
-function contasSelect(sel){
-  const cs = S.data.contas.filter(c=>c.status!=='inativo');
-  if(!cs.length) return '';
-  return cs.map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${c.nome}</option>`).join('');
-}
-function todayStr(){ const n=new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 (async function init(){
-  // Apply saved theme
-  const t = localStorage.getItem('theme')||'light';
+  const t=localStorage.getItem('theme')||'light';
   document.documentElement.setAttribute('data-theme',t);
-
-  try {
-    await loadData();
-  } catch(e){
-    console.error('Firebase error:', e);
+  const savedUser=getSession();
+  if(savedUser){
+    // Already logged in — verify user still exists
+    try{
+      const userDoc=await getDoc(doc(db,'usuarios',savedUser));
+      if(userDoc.exists()&&userDoc.data().primeiroAcesso!==true){
+        _currentUser=savedUser;
+        document.getElementById('login-screen').style.display='none';
+        await bootApp();
+        return;
+      }
+    }catch(e){console.error(e);}
+    clearSession();
   }
-
+  // Show login
   document.getElementById('loading-screen').style.display='none';
-  render();
 })();
 
-// Expose render globally for some onclick handlers
-window.render = render;
+window.render=render;
 </script>
 </body>
 </html>
